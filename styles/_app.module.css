@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px;
+}
+
+.logo {
+  font-size: large;
+  margin: 10px;
+}
+
+.search {
+  flex-grow: 1;
+}
