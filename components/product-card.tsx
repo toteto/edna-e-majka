@@ -36,5 +36,9 @@ export const ProductCard = ({ producer, product }: { producer: Producer; product
 }
 
 export const ProductCardsGroup = (props: { children: React.ReactNode }) => {
-  return <Card.Group>{props.children}</Card.Group>
+  return (
+    <Card.Group doubling stackable centered>
+      {props.children}
+    </Card.Group>
+  )
 }

@@ -1,15 +1,31 @@
+.appContainer {
+  display: flex;
+  margin: auto;
+  max-width: 1060px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .header {
+  align-self: stretch;
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 10px;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 .logo {
-  font-size: large;
-  margin: 10px;
+  width: 100px;
+  margin: 5px 10px;
+}
+
+.categories {
+  margin: 5px 10px;
 }
 
 .search {
   flex-grow: 1;
+  margin: 5px 10px;
 }

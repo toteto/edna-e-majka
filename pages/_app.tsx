@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styles from '../styles/_app.module.css'
-import { Menu, Dropdown, Input, Icon, Button, Image, Form } from 'semantic-ui-react'
+import { Dropdown, Input, Image } from 'semantic-ui-react'
 import { Category, fetchCategories } from '../lib/categories'
 import { AppProps } from 'next/dist/next-server/lib/router/router'
 import { useState } from 'react'
@@ -14,57 +14,46 @@ MyApp.getInitialProps = async () => {
   return { categories }
 }
 
-const generateCategoryItems = (categories: Category[], categoryContext: 'menu' | 'dropdown' = 'menu') => {
-  return categories.map((category) => (
-    <Link href={{ pathname: '/filter', query: { category: category.id } }}>
-      {categoryContext === 'menu' ? (
-        <Menu.Item>
-          {category.name}
-          {category.subcategories?.length ? (
-            <Dropdown key={category.id}>
-              <Dropdown.Menu>{generateCategoryItems(category.subcategories, 'dropdown')}</Dropdown.Menu>
-            </Dropdown>
-          ) : null}
-        </Menu.Item>
-      ) : (
-        <Dropdown.Item>
-          {category.name}
-          {category.subcategories?.length ? (
-            <Dropdown key={category.id}>
-              <Dropdown.Menu>{generateCategoryItems(category.subcategories, 'dropdown')}</Dropdown.Menu>
-            </Dropdown>
-          ) : null}
-        </Dropdown.Item>
-      )}
-    </Link>
-  ))
-}
-
 function MyApp(appProps: AppProps) {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const router = useRouter()
 
+  const triggerProductSearch = () => {
+    if (searchTerm) {
+      router.push({ pathname: '/filter', query: { search: searchTerm } })
+    }
+  }
+
   return (
-    <div>
+    <div className={styles.appContainer}>
       <Head>
         <title>ЕДНА Е МАЈКА</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.header}>
         <Link href="/" passHref>
-          <Image spaced src={'/logo.jpeg'} size="tiny" />
+          <Image className={styles.logo} src="/logo.jpeg" />
         </Link>
-        <Form onSubmit={() => searchTerm && router.push({ pathname: '/filter', query: { search: searchTerm } })}>
-          <Form.Input
-            className={styles.search}
-            placeholder={'Search...'}
-            onChange={(args) => setSearchTerm(args.target.value)}
-            value={searchTerm}
-            icon={<Icon name="search" type="submit" />}
-          />
-        </Form>
+        <Dropdown
+          className={styles.categories}
+          text="Категории"
+          icon="angle down"
+          options={appProps.categories.map((category: Category) => ({
+            key: category.id,
+            text: category.name,
+            active: false,
+            onClick: () => router.push({ pathname: '/filter', query: { category: category.id } })
+          }))}
+        />
+        <Input
+          className={styles.search}
+          placeholder={'Пребарај сите производи'}
+          onChange={(args) => setSearchTerm(args.target.value)}
+          value={searchTerm}
+          onKeyDown={(e: any) => e.code === 'Enter' && triggerProductSearch()}
+          action={{ icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
+        />
       </div>
-      <Menu borderless>{generateCategoryItems(appProps.categories)}</Menu>
       <appProps.Component {...appProps.pageProps} />
     </div>
   )
