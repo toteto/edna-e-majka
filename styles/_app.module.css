@@ -2,9 +2,13 @@
   display: flex;
   margin: auto;
   max-width: 1060px;
+  min-height: 100vh;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  background-color: #fff;
+  border-left: solid 1px #ddd;
+  border-right: solid 1px #ddd;
 }
 
 .header {
@@ -14,18 +18,18 @@
   align-items: center;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  margin: 10px 10px;
 }
 
 .logo {
-  width: 100px;
-  margin: 5px 10px;
+  width: 175px;
+  margin-right: 5px;
 }
-
 .categories {
-  margin: 5px 10px;
+  margin: 10px;
 }
 
 .search {
   flex-grow: 1;
-  margin: 5px 10px;
+  margin-left: 5px;
 }
