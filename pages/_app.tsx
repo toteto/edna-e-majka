@@ -32,7 +32,7 @@ function MyApp(appProps: AppProps) {
       </Head>
       <div className={styles.header}>
         <Link href="/" passHref>
-          <Image className={styles.logo} src="/logo.jpeg" />
+          <Image className={styles.logo} src="/logo.png" />
         </Link>
         <Dropdown
           className={styles.categories}
@@ -51,7 +51,7 @@ function MyApp(appProps: AppProps) {
           onChange={(args) => setSearchTerm(args.target.value)}
           value={searchTerm}
           onKeyDown={(e: any) => e.code === 'Enter' && triggerProductSearch()}
-          action={{ icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
+          action={{ color: 'red', icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
         />
       </div>
       <appProps.Component {...appProps.pageProps} />
