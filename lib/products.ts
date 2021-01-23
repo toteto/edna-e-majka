@@ -17,6 +17,7 @@ export type Producer = {
     phone?: string
     mail?: string
     facebook?: string
+    instagram?: string
   }
   desc: string
 }
@@ -28,8 +29,6 @@ export type Product = {
   price: string
   categories: Category[]
   addedDate: string
-  location: City
-  shippingLocations: City[]
   shortDescription: string
   fullDescription: string
 }
@@ -59,8 +58,6 @@ export const fetchProduct = async (producer: string, product: string): Promise<P
     price: data.price,
     categories: await fetchCategories(...data.categories),
     addedDate: data.addedDate,
-    location: (await fetchLocations(data.shippingLocations))[0],
-    shippingLocations: await fetchLocations(data.shippingLocations),
     shortDescription: data.shortDescription,
     fullDescription: (await remark().use(html).process(content)).toString()
   }
@@ -74,7 +71,7 @@ export const fetchProducer = async (producer: string): Promise<Producer> => {
   return {
     id: producer,
     name: data.name,
-    avatar: `/assets/${producer}/_.png`,
+    avatar: data.avatar ?? `/assets/${producer}/_.png`,
     contact: {
       ...data.contact
     },
