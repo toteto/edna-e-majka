@@ -1,17 +1,10 @@
-import 'swiper/swiper.min.css'
-import 'swiper/components/navigation/navigation.min.css'
-import 'swiper/components/pagination/pagination.min.css'
+import styles from '../../../styles/Product.module.css'
 import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Header, Icon, Label } from 'semantic-ui-react'
-import { ProducerInfo } from '../../../components/producer-info'
+import { Header, Label, Popup, Statistic } from 'semantic-ui-react'
 import { fetchProduct, fetchProductsWithProducers, fetchProducer, Producer, Product } from '../../../lib/products'
-import SwiperCore, { Navigation, Pagination } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { isUndefined } from 'util'
-
-SwiperCore.use([Navigation, Pagination])
+import { ProducerContactsLabels } from '../../../components/producer-info'
 
 type Params = {
   producer: string
@@ -29,38 +22,72 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
   return { paths, fallback: false }
 }
 
-const ProductPage = ({ product, producer }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const ProductPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
-      <div style={{ width: 400, margin: '0px 15px' }}>
-        <Swiper navigation={product.images.length > 1} pagination={product.images.length > 1} id={'swiper-color'}>
-          {product.images.map((url) => (
-            <SwiperSlide key={url}>
-              <Image src={url} width={400} height={400} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div>
-          <Header>{product.title}</Header>
-          <ProductCategories product={product} />
-          <div dangerouslySetInnerHTML={{ __html: product.fullDescription }} />
-        </div>
-        <ProducerInfo producer={producer} minimal />
-      </div>
+    <div className={styles.container}>
+      <ProductImages {...props} />
+      <ProductDetails {...props} />
     </div>
   )
 }
 
+const ProductDetailsHeader = ({ product, producer }: { product: Product; producer: Producer }) => (
+  <Header as="h1" dividing>
+    <ProductCategories product={product} />
+    {product.title}
+    <Header.Subheader>
+      <div style={{ display: 'flex', flexFlow: 'row wrap' }}>
+        <Link passHref href={{ pathname: '/filter', query: { producer: producer.id } }}>
+          <a>
+            <Popup
+              position="bottom right"
+              wide
+              mouseEnterDelay={100}
+              mouseLeaveDelay={500}
+              openOnTriggerClick={false}
+              trigger={
+                <div style={{ float: 'left' }}>
+                  {producer.name}
+                  <div className={'ui avatar image spaced'}>
+                    <Image src={producer.avatar} width={28} height={28} objectFit="cover" />
+                  </div>
+                </div>
+              }
+              content={<div dangerouslySetInnerHTML={{ __html: producer.desc }} />}
+            />
+          </a>
+        </Link>
+        <ProducerContactsLabels producer={producer} />
+      </div>
+    </Header.Subheader>
+  </Header>
+)
+
+const ProductDetails = (props: { product: Product; producer: Producer }) => (
+  <div className={styles.productDetailsContainer}>
+    <ProductDetailsHeader {...props} />
+    <div dangerouslySetInnerHTML={{ __html: props.product.fullDescription }} />
+  </div>
+)
+
+const ProductImages = ({ product }: { product: Product }) => (
+  <div className={styles.productImagesContainer}>
+    {product.images.map((url) => (
+      <div key={url} className={'ui spaced rounded image ' + styles.productImage}>
+        <Image src={url} width={512} height={384} objectFit="cover" />
+      </div>
+    ))}
+  </div>
+)
+
 const ProductCategories = ({ product }: { product: Product }) => (
-  <div style={{ marginTop: 8, marginBottom: 8 }}>
+  <Label.Group size="small">
     {product.categories.map((category) => (
       <Link key={category.id} passHref href={{ pathname: '/filter', query: { category: category.id } }}>
         <Label as="a">{category.name}</Label>
       </Link>
     ))}
-  </div>
+  </Label.Group>
 )
 
 export default ProductPage

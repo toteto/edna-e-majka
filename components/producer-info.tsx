@@ -18,14 +18,34 @@ export const ProducerInfo = ({ producer, minimal }: { producer: Producer; minima
         </Link>
         <div dangerouslySetInnerHTML={{ __html: producer.desc }} />
         <Header size="small">Контакт:</Header>
-        <div>
-          {producer.contact.phone && <PhoneContactLabel phone={producer.contact.phone} />}
-          {producer.contact.facebook && <FacebookContactLabel url={producer.contact.facebook} />}
-          {producer.contact.instagram && <InstagramContactLabel url={producer.contact.instagram} />}
-          {producer.contact.mail && <MailContactLabel mail={producer.contact.mail} />}
-        </div>
       </div>
+      <ProducerContactsLabels producer={producer} />
     </Segment>
+  </div>
+)
+
+export const ProducerContactsLabels = ({ producer }: { producer: Producer }) => (
+  <div className={styles.producerContactsLabelsContainer}>
+    {producer.contact.phone && (
+      <div className={styles.producerContactLabel}>
+        <PhoneContactLabel phone={producer.contact.phone} />
+      </div>
+    )}
+    {producer.contact.facebook && (
+      <div className={styles.producerContactLabel}>
+        <FacebookContactLabel url={producer.contact.facebook} />
+      </div>
+    )}
+    {producer.contact.instagram && (
+      <div className={styles.producerContactLabel}>
+        <InstagramContactLabel url={producer.contact.instagram} />
+      </div>
+    )}
+    {producer.contact.mail && (
+      <div className={styles.producerContactLabel}>
+        <MailContactLabel mail={producer.contact.mail} />
+      </div>
+    )}
   </div>
 )
 
@@ -36,19 +56,19 @@ const PhoneContactLabel = (props: { phone: string }) => (
 )
 
 const InstagramContactLabel = (props: { url: string }) => (
-  <Label as="a" href={props.url} color="purple">
+  <Label as="a" href={props.url} color="purple" className={styles.producerContactLabel}>
     <Icon name="instagram" /> Instagram
   </Label>
 )
 
 const FacebookContactLabel = (props: { url: string }) => (
-  <Label as="a" href={props.url} color="blue">
+  <Label as="a" href={props.url} color="blue" className={styles.producerContactLabel}>
     <Icon name="facebook" /> Facebook
   </Label>
 )
 
 const MailContactLabel = (props: { mail: string }) => (
-  <Label as="a" href={`mailto:${props.mail}`} color="red">
+  <Label as="a" href={`mailto:${props.mail}`} color="red" className={styles.producerContactLabel}>
     <Icon name="mail" /> {props.mail}
   </Label>
 )
