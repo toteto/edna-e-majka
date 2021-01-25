@@ -154,6 +154,21 @@ export const fetchProductsWithProducers = async () =>
   )
 
 export const fetchProductsGroupedByProducers = async () => {
+  try {
+    console.log(process.env.publicDirPath, fs.readdirSync(process.env.publicDirPath!))
+  } catch (e) {
+    console.log(e)
+  }
+  try {
+    console.log('/', fs.readdirSync('/'))
+  } catch (e) {
+    console.log(e)
+  }
+  try {
+    console.log('/', fs.readdirSync(''))
+  } catch (e) {
+    console.log(e)
+  }
   const producers = fs.readdirSync(productsDir)
   return producers.map((producer) => {
     const products = fs

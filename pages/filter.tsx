@@ -12,9 +12,6 @@ import {
 } from '../lib/products'
 
 export const getServerSideProps: GetServerSideProps<FilterPageProps> = async ({ query }) => {
-  console.log(process.env.publicDirPath, fs.readdirSync(process.env.publicDirPath!))
-  console.log('/', fs.readdirSync('/'))
-  console.log('/', fs.readdirSync(''))
   if (typeof query.category === 'string') {
     const products = await fetchProductsByCategory(query.category)
     return { props: { products } }
