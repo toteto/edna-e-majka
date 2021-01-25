@@ -5,8 +5,10 @@ import remark from 'remark'
 import html from 'remark-html'
 import { Category, fetchCategories } from './categories'
 
-const productsDir = join(process.cwd(), 'data', 'products')
-const publicDir = join(process.cwd(), 'public')
+const isProd = process.env.NODE_ENV === 'production'
+
+const productsDir = isProd ? join('assets', 'products') : join(process.cwd(), 'public', 'assets', 'products')
+const publicDir = isProd ? '' : join(process.cwd(), 'public')
 
 export type Producer = {
   id: string
