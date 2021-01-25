@@ -5,7 +5,7 @@ module.exports = (phase, { defaultConfig }) => {
   return {
     ...defaultConfig,
     env: Object.assign(defaultConfig.env || {}, {
-      publicDirPath: isProductionServer ? '' : process.cwd() + '/public'
+      publicDirPath: isProductionServer ? '/' : process.cwd() + '/public'
     }),
     webpack: (config, { isServer }) => {
       // Fixes npm packages that depend on `fs` module
