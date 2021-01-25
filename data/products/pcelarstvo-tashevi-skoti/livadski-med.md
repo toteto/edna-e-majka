@@ -1,7 +1,7 @@
 ---
 title: Ливадски мед
 price: 400мкд
-categories: [bee-products, honey]
+categories: [honey]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-03T19:08:00Z'
 location: bitola

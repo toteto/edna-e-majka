@@ -1,7 +1,7 @@
 ---
 title: Матична млеч – Пчелино млеко
 price:
-categories: []
+categories: [bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'
 location:

@@ -1,7 +1,7 @@
 ---
 title: Ливадски мед
 price: 250/400
-categories: []
+categories: [honey]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'
 location:

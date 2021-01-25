@@ -1,7 +1,7 @@
 ---
 title: ПРОПОЛИС – ПРИРОДЕН АНТИБИОТИК
 price: 70/100/150
-categories: []
+categories: [bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'
 shortDescription: За зајакнување на вашиот имунитет користете го прополисот секојдневно како дел од вашата исхрана.

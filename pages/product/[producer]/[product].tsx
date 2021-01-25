@@ -49,7 +49,7 @@ const ProductDetailsHeader = ({ product, producer }: { product: Product; produce
                 <div style={{ float: 'left' }}>
                   {producer.name}
                   <div className={'ui avatar image spaced'}>
-                    <Image src={producer.avatar} width={28} height={28} objectFit="cover" />
+                    <Image priority src={producer.avatar} width={28} height={28} objectFit="cover" />
                   </div>
                 </div>
               }
@@ -72,9 +72,9 @@ const ProductDetails = (props: { product: Product; producer: Producer }) => (
 
 const ProductImages = ({ product }: { product: Product }) => (
   <div className={styles.productImagesContainer}>
-    {product.images.map((url) => (
+    {product.images.map((url, index) => (
       <div key={url} className={'ui spaced rounded image ' + styles.productImage}>
-        <Image src={url} width={512} height={384} objectFit="cover" />
+        <Image priority={index === 0} src={url} width={512} height={384} objectFit="cover" />
       </div>
     ))}
   </div>
@@ -84,7 +84,7 @@ const ProductCategories = ({ product }: { product: Product }) => (
   <Label.Group size="small">
     {product.categories.map((category) => (
       <Link key={category.id} passHref href={{ pathname: '/filter', query: { category: category.id } }}>
-        <Label as="a">{category.name}</Label>
+        <Label as="a">{category.title}</Label>
       </Link>
     ))}
   </Label.Group>

@@ -40,7 +40,7 @@ function MyApp(appProps: AppProps) {
           icon="angle down"
           options={appProps.categories.map((category: Category) => ({
             key: category.id,
-            text: category.name,
+            text: category.title,
             active: false,
             onClick: () => router.push({ pathname: '/filter', query: { category: category.id } })
           }))}

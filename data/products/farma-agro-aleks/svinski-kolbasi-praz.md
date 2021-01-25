@@ -1,7 +1,7 @@
 ---
 title: Свински колбаси со праз
 price: 500мкд/кг
-categories: [processed-meat]
+categories: [meat]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-07T21:46:00Z'
 location: skopje

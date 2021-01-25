@@ -1,5 +1,4 @@
-import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
-import { Header, Image, Segment } from 'semantic-ui-react'
+import { GetServerSideProps } from 'next'
 import { ProducerInfo } from '../components/producer-info'
 import { ProductCard, ProductCardsGroup } from '../components/product-card'
 import { Category } from '../lib/categories'

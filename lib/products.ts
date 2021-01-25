@@ -3,8 +3,7 @@ import fs from 'fs'
 import matter from 'gray-matter'
 import remark from 'remark'
 import html from 'remark-html'
-import { Category, fetchCategories, matchesCategory } from './categories'
-import { City, fetchLocations } from './cities'
+import { Category, fetchCategories } from './categories'
 
 const productsDir = join(process.cwd(), 'data', 'products')
 const publicDir = join(process.cwd(), 'public')
@@ -94,13 +93,12 @@ export const fetchProductsByProducer = async (producerId: string) => {
 }
 
 export const fetchProductsByCategory = async (categoryId: string) => {
-  const category = (await fetchCategories(categoryId))[0]
   const ids = await fetchProductsWithProducers()
   const results: { producer: Producer; product: Product }[] = []
   for (const pair of ids) {
     const producer = await fetchProducer(pair.producer)
     const product = await fetchProduct(pair.producer, pair.product)
-    if (product.categories.some((c) => matchesCategory(category, c.id))) results.push({ producer, product })
+    if (product.categories.some((c) => c.id === categoryId)) results.push({ producer, product })
   }
 
   return results
@@ -137,7 +135,7 @@ export const fetchProductsBySearchQuery = async (term: string): Promise<{ produc
         weight: 0.2
       },
       {
-        name: 'product.categories.name',
+        name: 'product.categories.title',
         weight: 0.5
       },
       {

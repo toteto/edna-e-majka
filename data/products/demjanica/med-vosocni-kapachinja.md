@@ -1,7 +1,7 @@
 ---
 title: Мед со восочни капачиња
 price: 600
-categories: []
+categories: [honey, bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'
 location:

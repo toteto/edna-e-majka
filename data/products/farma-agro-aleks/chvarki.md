@@ -1,7 +1,7 @@
 ---
 title: Чварки
 price: 650мкд/кг
-categories: [cooked-meat]
+categories: [meat]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-06T15:34:00Z'
 location: skopje
