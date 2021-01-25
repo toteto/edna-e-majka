@@ -6,7 +6,7 @@ import html from 'remark-html'
 import { Category, fetchCategories } from './categories'
 
 const publicDir = process.env.publicDirPath!
-const productsDir = join(process.env.publicDirPath!, 'assets', 'products')
+const productsDir = join(publicDir, 'assets', 'products')
 
 export type Producer = {
   id: string
