@@ -4,6 +4,7 @@ import matter from 'gray-matter'
 import remark from 'remark'
 import html from 'remark-html'
 import { Category, fetchCategories } from './categories'
+import { latinToCyrillic } from './util'
 
 const publicDir = () => path.resolve('./public')
 const productsDir = () => path.join(publicDir(), 'data', 'products')
@@ -120,15 +121,11 @@ export const fetchProductsBySearchQuery = async (term: string): Promise<{ produc
   const fuse = new Fuse(searchSpace, {
     ignoreLocation: true,
     includeScore: true,
-    threshold: 0.2,
+    useExtendedSearch: true,
     keys: [
       {
         name: 'product.title',
         weight: 1
-      },
-      {
-        name: 'product.shortDescription:',
-        weight: 0.4
       },
       {
         name: 'product.fullDescription::',
@@ -136,7 +133,7 @@ export const fetchProductsBySearchQuery = async (term: string): Promise<{ produc
       },
       {
         name: 'product.categories.title',
-        weight: 0.5
+        weight: 0.6
       },
       {
         name: 'producer.name',
@@ -144,7 +141,8 @@ export const fetchProductsBySearchQuery = async (term: string): Promise<{ produc
       }
     ]
   })
-  const searchResults = fuse.search(term)
+  const searchResults = fuse.search(`'${term} | '${latinToCyrillic(term)}`)
+
   return searchResults.map((res) => res.item)
 }
 
