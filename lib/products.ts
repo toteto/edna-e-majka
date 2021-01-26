@@ -5,8 +5,8 @@ import remark from 'remark'
 import html from 'remark-html'
 import { Category, fetchCategories } from './categories'
 
-const publicDir = path.resolve('./public')
-const productsDir = path.join(publicDir, 'assets', 'products')
+const publicDir = () => path.resolve('./public')
+const productsDir = () => path.join(publicDir(), 'assets', 'products')
 
 export type Producer = {
   id: string
@@ -33,13 +33,13 @@ export type Product = {
 }
 
 export const fetchProduct = async (producer: string, product: string): Promise<Product> => {
-  const fileContent = fs.readFileSync(path.join(productsDir, producer, `${product}.md`))
+  const fileContent = fs.readFileSync(path.join(productsDir(), producer, `${product}.md`))
 
   const images: string[] = []
   let i = 1
   while (true) {
     const relativeImagePath = path.join('/assets', producer, `${product}-${i}.jpg`)
-    const fullPath = path.join(publicDir, relativeImagePath)
+    const fullPath = path.join(publicDir(), relativeImagePath)
 
     if (fs.existsSync(fullPath)) {
       images.push(relativeImagePath)
@@ -63,7 +63,7 @@ export const fetchProduct = async (producer: string, product: string): Promise<P
 }
 
 export const fetchProducer = async (producer: string): Promise<Producer> => {
-  const fileContent = fs.readFileSync(path.join(productsDir, producer, '_.md'))
+  const fileContent = fs.readFileSync(path.join(productsDir(), producer, '_.md'))
   const { data, content } = matter(fileContent)
   const desc = (await remark().use(html).process(content)).toString()
 
@@ -154,10 +154,10 @@ export const fetchProductsWithProducers = async () =>
   )
 
 export const fetchProductsGroupedByProducers = async () => {
-  const producers = fs.readdirSync(productsDir)
+  const producers = fs.readdirSync(productsDir())
   return producers.map((producer) => {
     const products = fs
-      .readdirSync(path.join(productsDir, producer))
+      .readdirSync(path.join(productsDir(), producer))
       .filter((f) => f !== '_.md') // remove producer info
       .map((pid) => pid.replace(/\.md$/, '')) // remove .md extension
 
