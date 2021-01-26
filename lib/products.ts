@@ -6,7 +6,7 @@ import html from 'remark-html'
 import { Category, fetchCategories } from './categories'
 
 const publicDir = () => path.resolve('./public')
-const productsDir = () => path.join(publicDir(), 'assets', 'products')
+const productsDir = () => path.join(publicDir(), 'data', 'products')
 
 export type Producer = {
   id: string
@@ -38,11 +38,11 @@ export const fetchProduct = async (producer: string, product: string): Promise<P
   const images: string[] = []
   let i = 1
   while (true) {
-    const relativeImagePath = path.join('/assets', producer, `${product}-${i}.jpg`)
-    const fullPath = path.join(publicDir(), relativeImagePath)
+    const imagePath = path.join('/assets', producer, `${product}-${i}.jpg`)
+    const fullPath = path.join(publicDir(), imagePath)
 
     if (fs.existsSync(fullPath)) {
-      images.push(relativeImagePath)
+      images.push(imagePath)
       i++
     } else {
       break
