@@ -1,5 +1,5 @@
 ---
-title: ПРОПОЛИС – ПРИРОДЕН АНТИБИОТИК
+title: Прополис - природен антибиотик
 price: 70/100/150
 categories: [bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
