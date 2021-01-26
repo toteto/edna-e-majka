@@ -37,7 +37,7 @@ const ProductDetailsHeader = ({ product, producer }: { product: Product; produce
     {product.title}
     <Header.Subheader>
       <div style={{ display: 'flex', flexFlow: 'row wrap' }}>
-        <Link passHref href={{ pathname: '/filter', query: { producer: producer.id } }}>
+        <Link passHref href={`/filter/producer/${producer.id}`}>
           <a>
             <Popup
               position="bottom right"
@@ -83,7 +83,7 @@ const ProductImages = ({ product }: { product: Product }) => (
 const ProductCategories = ({ product }: { product: Product }) => (
   <Label.Group size="small">
     {product.categories.map((category) => (
-      <Link key={category.id} passHref href={{ pathname: '/filter', query: { category: category.id } }}>
+      <Link key={category.id} passHref href={`/filter/category/${category.id}`}>
         <Label as="a">{category.title}</Label>
       </Link>
     ))}

@@ -20,7 +20,7 @@ function MyApp(appProps: AppProps) {
 
   const triggerProductSearch = () => {
     if (searchTerm) {
-      router.push({ pathname: '/filter', query: { search: searchTerm } })
+      router.push(`/filter/search/${searchTerm}`)
     }
   }
 
@@ -42,7 +42,7 @@ function MyApp(appProps: AppProps) {
             key: category.id,
             text: category.title,
             active: false,
-            onClick: () => router.push({ pathname: '/filter', query: { category: category.id } })
+            onClick: () => router.push(`/filter/category/${category.id}`)
           }))}
         />
         <Input

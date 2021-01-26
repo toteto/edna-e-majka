@@ -8,7 +8,7 @@ export const ProducerInfo = ({ producer, minimal }: { producer: Producer; minima
   <div className={styles.container}>
     <Segment>
       <div className={styles.innerContainer}>
-        <Link passHref href={{ pathname: '/filter', query: { producer: producer.id } }}>
+        <Link passHref href={`/filter/producer/${producer.id}`}>
           <Header>
             <div className={'ui avatar image'}>
               <Image src={producer.avatar} width={minimal ? 28 : 32} height={minimal ? 28 : 32} objectFit="cover" />
@@ -17,9 +17,11 @@ export const ProducerInfo = ({ producer, minimal }: { producer: Producer; minima
           </Header>
         </Link>
         <div dangerouslySetInnerHTML={{ __html: producer.desc }} />
-        <Header size="small">Контакт:</Header>
+        <Header size="small">
+          Контакт:
+          <ProducerContactsLabels producer={producer} />
+        </Header>
       </div>
-      <ProducerContactsLabels producer={producer} />
     </Segment>
   </div>
 )

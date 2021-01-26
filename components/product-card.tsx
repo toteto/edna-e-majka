@@ -7,7 +7,7 @@ import format from 'date-fns/format'
 
 export const ProductCard = ({ producer, product }: { producer: Producer; product: Product }) => {
   return (
-    <Link passHref href={`product/${producer.id}/${product.id}`}>
+    <Link passHref href={`/product/${producer.id}/${product.id}`}>
       <Card link key={`${producer.id}-${product.id}`}>
         <NextImage src={product.images[0]} width={256} height={192} objectFit="cover" />
         <Card.Content>
@@ -19,7 +19,7 @@ export const ProductCard = ({ producer, product }: { producer: Producer; product
         </Card.Content>
 
         <Card.Content extra>
-          <Link passHref href={{ pathname: '/filter', query: { producer: producer.id } }}>
+          <Link passHref href={`/filter/producer/${producer.id}`}>
             <a>
               <div className={'ui avatar image'}>
                 <NextImage src={producer.avatar} width={28} height={28} objectFit="cover" />

@@ -154,7 +154,7 @@ export const fetchProductsWithProducers = async () =>
   )
 
 export const fetchProductsGroupedByProducers = async () => {
-  const producers = fs.readdirSync(productsDir())
+  const producers = await fetchProducerIds()
   return producers.map((producer) => {
     const products = fs
       .readdirSync(path.join(productsDir(), producer))
@@ -163,4 +163,8 @@ export const fetchProductsGroupedByProducers = async () => {
 
     return { producer, products }
   })
+}
+
+export const fetchProducerIds = async () => {
+  return fs.readdirSync(productsDir())
 }
