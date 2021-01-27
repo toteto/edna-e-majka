@@ -11,20 +11,11 @@ const categories: Category[] = [
   },
   {
     id: 'honey',
-    title: 'Мед',
-    parent: 'bee-products'
+    title: 'Мед'
   },
   {
-    id: 'pasta',
-    title: 'Тестенини'
-  },
-  {
-    id: 'pastries',
-    title: 'Месени работи'
-  },
-  {
-    id: 'meat',
-    title: 'Месо'
+    id: 'jams-jelly',
+    title: 'Слатко и џем'
   }
 ]
 
