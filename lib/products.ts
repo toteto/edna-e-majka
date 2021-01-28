@@ -28,7 +28,7 @@ export type Product = {
   images: string[]
   price: {
     desc: string
-    cost: string
+    cost: number
   }[]
   categories: Category[]
   addedDate: string

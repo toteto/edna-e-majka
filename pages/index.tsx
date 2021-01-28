@@ -22,13 +22,14 @@ export const getStaticProps = async (_context: GetStaticPropsContext) => {
 
 type OrderDirectionType = 'descending' | 'ascending'
 const orderAlphabetical = 'alphabetical'
-const orderDate = 'date'
+const orderNewest = 'date'
+const orderCost = 'cost'
 
 const Home = ({ allProducts }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const [sortDirection, setOrderDirection] = useState<OrderDirectionType>('descending')
-  const [sortType, setOrder] = useState(orderDate)
+  const [sortDirection, setOrderDirection] = useState<OrderDirectionType>('ascending')
+  const [sortType, setOrder] = useState(orderNewest)
 
-  const handleOrderClick = (_: any, { name }: { name?: string }) => setOrder(name ?? orderDate)
+  const handleOrderClick = (_: any, { name }: { name?: string }) => setOrder(name ?? orderNewest)
 
   return (
     <div>
@@ -38,17 +39,20 @@ const Home = ({ allProducts }: InferGetStaticPropsType<typeof getStaticProps>) =
           <Icon
             style={{ paddingLeft: 5, paddingRight: 5 }}
             link
-            name={sortDirection === 'descending' ? 'sort amount down' : 'sort amount up'}
+            name={sortDirection === 'ascending' ? 'sort amount down' : 'sort amount up'}
             onClick={() =>
-              sortDirection === 'descending' ? setOrderDirection('ascending') : setOrderDirection('descending')
+              sortDirection === 'ascending' ? setOrderDirection('descending') : setOrderDirection('ascending')
             }
           />
         </Menu.Item>
-        <Menu.Item name={orderDate} active={sortType === orderDate} onClick={handleOrderClick}>
-          Последно додадени
+        <Menu.Item name={orderNewest} active={sortType === orderNewest} onClick={handleOrderClick}>
+          Најново
         </Menu.Item>
         <Menu.Item name={orderAlphabetical} active={sortType === orderAlphabetical} onClick={handleOrderClick}>
           Азбучен редослед
+        </Menu.Item>
+        <Menu.Item name={orderCost} active={sortType === orderCost} onClick={handleOrderClick}>
+          Цена
         </Menu.Item>
       </Menu>
       <ProductCardsGroup>
@@ -57,7 +61,9 @@ const Home = ({ allProducts }: InferGetStaticPropsType<typeof getStaticProps>) =
             const score =
               (sortType === 'alphabetical' && p1.product.title.localeCompare(p2.product.title, 'mk')) ||
               (sortType === 'date' &&
-                new Date(p1.product.addedDate).getTime() - new Date(p2.product.addedDate).getTime())
+                new Date(p2.product.addedDate).getTime() - new Date(p1.product.addedDate).getTime()) ||
+              (sortType === 'cost' &&
+                Math.min(...p1.product.price.map((p) => p.cost)) - Math.min(...p2.product.price.map((p) => p.cost)))
 
             return score ? (sortDirection === 'ascending' ? score : -1 * score) : 0
           })
