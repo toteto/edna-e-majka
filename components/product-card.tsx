@@ -21,7 +21,7 @@ export const ProductCard = ({ producer, product }: { producer: Producer; product
         <Card.Content extra textAlign="center">
           <Header sub>ЦЕНА</Header>
           {product.price.map((p) => (
-            <Statistic size="mini" color="red" label={p.desc} value={p.cost + 'МКД'} />
+            <Statistic key={p.desc} size="mini" color="red" label={p.desc} value={p.cost + ' МКД'} />
           ))}
         </Card.Content>
         <Card.Content extra>
