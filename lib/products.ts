@@ -26,7 +26,10 @@ export type Product = {
   id: string
   title: string
   images: string[]
-  price: string
+  price: {
+    desc: string
+    cost: string
+  }[]
   categories: Category[]
   addedDate: string
   shortDescription: string
@@ -51,6 +54,7 @@ export const fetchProduct = async (producer: string, product: string): Promise<P
   }
 
   const { data, content } = matter(fileContent)
+
   return {
     id: product,
     title: data.title,

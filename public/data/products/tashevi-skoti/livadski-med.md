@@ -1,6 +1,12 @@
 ---
 title: Ливадски мед
-price: 200/350
+price: 
+-
+  desc: 1кг
+  cost: 350
+-
+  desc: 0.5кг
+  cost: 200
 categories: [honey]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-27T21:42:00Z'

@@ -1,6 +1,9 @@
 ---
 title: Пита природно саќе
-price: 600
+price:
+-
+  desc: 1кг
+  cost: 600
 categories: [honey, bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'

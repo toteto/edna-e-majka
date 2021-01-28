@@ -2,7 +2,7 @@ import styles from '../../../styles/Product.module.css'
 import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Header, Label, Popup, Statistic } from 'semantic-ui-react'
+import { Header, Label, Popup } from 'semantic-ui-react'
 import { fetchProduct, fetchProductsWithProducers, fetchProducer, Producer, Product } from '../../../lib/products'
 import { ProducerContactsLabels } from '../../../components/producer-info'
 

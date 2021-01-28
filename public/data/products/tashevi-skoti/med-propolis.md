@@ -1,6 +1,12 @@
 ---
 title: Мед и прополис
-price: 600/300
+price:
+-
+  desc: 1кг
+  cost: 600
+-
+  desc: 0.5кг
+  cost: 300
 categories: [honey, bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-27T21:42:00Z'

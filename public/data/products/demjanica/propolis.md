@@ -1,6 +1,15 @@
 ---
 title: Прополис - природен антибиотик
-price: 70/100/150
+price: 
+-
+  desc: 10мл
+  cost: 70
+-
+  desc: 20мл
+  cost: 100
+-
+  desc: 20мл спреј
+  cost: 150
 categories: [bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'

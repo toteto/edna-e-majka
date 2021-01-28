@@ -1,6 +1,12 @@
 ---
 title: Природен мед со полен
 price:
+-
+  desc: 1кг
+  cost: 1000
+-
+  desc: 0.5кг
+  cost: 600
 categories: [honey, bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'

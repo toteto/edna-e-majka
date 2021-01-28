@@ -1,7 +1,7 @@
 import styles from './product-card.module.css'
 import NextImage from 'next/image'
 import Link from 'next/link'
-import { Card } from 'semantic-ui-react'
+import { Card, Header, Statistic } from 'semantic-ui-react'
 import { Producer, Product } from '../lib/products'
 import format from 'date-fns/format'
 
@@ -18,6 +18,12 @@ export const ProductCard = ({ producer, product }: { producer: Producer; product
           <Card.Description>{product.shortDescription}</Card.Description>
         </Card.Content>
 
+        <Card.Content extra textAlign="center">
+          <Header sub>ЦЕНА</Header>
+          {product.price.map((p) => (
+            <Statistic size="mini" color="red" label={p.desc} value={p.cost + 'МКД'} />
+          ))}
+        </Card.Content>
         <Card.Content extra>
           <Link passHref href={`/filter/producer/${producer.id}`}>
             <a>

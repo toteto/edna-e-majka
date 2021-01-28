@@ -1,6 +1,9 @@
 ---
 title: Маџун домашен
-price: 400
+price: 
+-
+  desc: 720мл
+  cost: 400
 categories: [jams-jelly]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-27T22:21:00Z'

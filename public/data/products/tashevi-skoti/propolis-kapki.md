@@ -1,6 +1,9 @@
 ---
 title: Прополисови капки
-price: 100
+price: 
+-
+  desc: 20мл
+  cost: 100
 categories: [bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-27T21:42:00Z'

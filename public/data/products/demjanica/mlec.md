@@ -1,6 +1,12 @@
 ---
 title: Матична млеч
 price:
+-
+  desc: 10гр
+  cost: 1800
+-
+  desc: 5гр + 0.5кг мед
+  cost: 1000
 categories: [bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'

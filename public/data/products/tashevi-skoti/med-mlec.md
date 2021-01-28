@@ -1,6 +1,12 @@
 ---
 title: Мед и матичен млеч
-price: 1000/2000
+price: 
+-
+  desc: 1кг
+  cost: 2000
+-
+  desc: 0.5кг
+  cost: 1000
 categories: [honey, bee-products]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-27T21:42:00Z'

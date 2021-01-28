@@ -1,6 +1,12 @@
 ---
 title: Природен мед со ѓумбир
-price: 300/600
+price: 
+-
+  desc: 1кг
+  cost: 600
+-
+  desc: 0.5кг
+  cost: 300
 categories: [honey]
 # YYYY-MM-DDTHH:MM:SSZ
 addedDate: '2021-01-22T21:04:00Z'
