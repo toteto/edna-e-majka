@@ -4,10 +4,11 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styles from '../styles/_app.module.css'
-import { Dropdown, Input, Image } from 'semantic-ui-react'
+import { Dropdown, Input, Image, Icon, Button } from 'semantic-ui-react'
 import { Category, fetchCategories } from '../lib/categories'
 import { AppProps } from 'next/dist/next-server/lib/router/router'
 import { useState } from 'react'
+import { ContactModal } from '../components/contact-modal'
 
 MyApp.getInitialProps = async () => {
   const categories = await fetchCategories()
@@ -57,7 +58,39 @@ function MyApp(appProps: AppProps) {
           action={{ color: 'red', icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
         />
       </div>
-      <appProps.Component {...appProps.pageProps} />
+      <div style={{ flexGrow: 1 }}>
+        <appProps.Component {...appProps.pageProps} />
+      </div>
+      <div className={styles.footer}>
+        <div>
+          <a className={styles.footerSocialIcon} href="https://www.facebook.com/ednaemajka.mk">
+            <Icon link name="facebook" size="large" color="blue" />
+          </a>
+          <a className={styles.footerSocialIcon} href="https://m.me/ednaemajka.mk">
+            <Icon link name="facebook messenger" size="large" color="blue" />
+          </a>
+          <a className={styles.footerSocialIcon} href="https://www.instagram.com/ednaemajka.mk/">
+            <Icon link name="instagram" size="large" color="purple" />
+          </a>
+          <ContactModal>
+            <div className={styles.footerSocialIcon} style={{ cursor: 'pointer' }}>
+              <Image src="/favicon-32x32.png" inline style={{ width: 20, verticalAlign: 'middle', marginRight: 3 }} />
+              Контакт
+            </div>
+          </ContactModal>
+        </div>
+        <div style={{ marginTop: 5 }}>
+          © 2011 - 2021{' '}
+          <Link href="/" passHref>
+            <a>ednaemajka.mk</a>
+          </Link>
+          <span>. Сите права задржани.</span>
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <span>Направено со </span>
+          <Icon name="heart" color="red" />
+        </div>
+      </div>
     </div>
   )
 }
