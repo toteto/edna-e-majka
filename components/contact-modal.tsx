@@ -5,14 +5,7 @@ export const ContactModal = (props: { children: React.ReactNode }) => {
   const [open, setOpen] = React.useState(false)
 
   return (
-    <Modal
-      size="small"
-      trigger={props.children}
-      closeIcon
-      onClose={() => setOpen(false)}
-      onOpen={() => setOpen(true)}
-      open={open}
-    >
+    <Modal trigger={props.children} closeIcon onClose={() => setOpen(false)} onOpen={() => setOpen(true)} open={open}>
       <Modal.Header>Контактирајте нѐ</Modal.Header>
       <Modal.Content image>
         <Image src="/logo.png" wrapped />

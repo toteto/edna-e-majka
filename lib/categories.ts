@@ -20,6 +20,10 @@ const categories: Category[] = [
   {
     id: 'jams-jelly',
     title: 'Слатко и џем'
+  },
+  {
+    id: 'spread',
+    title: 'Намази'
   }
 ].sort((c1, c2) => c1.title.localeCompare(c2.title))
 
