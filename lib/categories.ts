@@ -18,14 +18,14 @@ const categories: Category[] = [
     title: 'Тестенини'
   },
   {
-    id: 'jams-jelly',
-    title: 'Слатко и џем'
-  },
-  {
     id: 'spread',
     title: 'Намази'
+  },
+  {
+    id: 'jams-jelly',
+    title: 'Слатко и џем'
   }
-].sort((c1, c2) => c1.title.localeCompare(c2.title))
+]
 
 export const fetchCategories = async (...ids: string[]) => {
   return ids.length > 0 ? categories.filter((c) => ids.includes(c.id)) : [...categories]
