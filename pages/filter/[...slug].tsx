@@ -72,11 +72,7 @@ const FilterPage = (props: FilterPageProps) => {
   return (
     <div>
       {props.producerInfo && <ProducerInfo producer={props.producerInfo} />}
-      <ProductCardsGroup>
-        {props.products.map((p) => (
-          <ProductCard key={`${p.producer.id}-${p.product.id}`} {...p} />
-        ))}
-      </ProductCardsGroup>
+      <ProductCardsGroup products={props.products} />
     </div>
   )
 }
