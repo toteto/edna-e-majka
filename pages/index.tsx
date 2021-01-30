@@ -24,7 +24,7 @@ const Home = ({ allProducts }: InferGetStaticPropsType<typeof getStaticProps>) =
   return (
     <div>
       <Message style={{ margin: 10 }}>
-        <Message.Header>Добредојвоте на ЕДНА Е МАЈКА</Message.Header>
+        <Message.Header>Добредојдовте на ЕДНА Е МАЈКА</Message.Header>
         <p>
           „Една е мајка“ е онлајн платоформа која служи како огласник за домашни производи. Тука индивидуални
           произведувачи на домашни производи со висок квалитет ги објавуваат своите производи, додека купувачите на
