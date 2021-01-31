@@ -1,33 +1,44 @@
 import styles from '../../../styles/Product.module.css'
-import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next'
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Header, Label, Popup } from 'semantic-ui-react'
 import { fetchProduct, fetchProductsWithProducers, fetchProducer, Producer, Product } from '../../../lib/products'
 import { ProducerContactsLabels } from '../../../components/producer-info'
+import Head from 'next/head'
 
-type Params = {
+type PathParams = {
   producer: string
   product: string
 }
 
-export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
+export const getStaticProps: GetStaticProps<ProductPageProps, PathParams> = async ({ params }) => {
   const product = await fetchProduct(params!.producer, params!.product)
   const producer = await fetchProducer(params!.producer)
   return { props: { product, producer } }
 }
 
-export const getStaticPaths: GetStaticPaths<Params> = async () => {
+export const getStaticPaths: GetStaticPaths<PathParams> = async () => {
   const paths = (await fetchProductsWithProducers()).map((params) => ({ params }))
   return { paths, fallback: false }
 }
 
+type ProductPageProps = {
+  product: Product
+  producer: Producer
+}
+
 const ProductPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <div className={styles.container}>
-      <ProductImages {...props} />
-      <ProductDetails {...props} />
-    </div>
+    <>
+      <Head>
+        <title>{`${props.product.title} | ЕДНА Е МАЈКА`}</title>
+      </Head>
+      <div className={styles.container}>
+        <ProductImages {...props} />
+        <ProductDetails {...props} />
+      </div>
+    </>
   )
 }
 

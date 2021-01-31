@@ -1,4 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
+import Head from 'next/head'
 import { ProducerInfo } from '../../components/producer-info'
 import { ProductCard, ProductCardsGroup } from '../../components/product-card'
 import { Category, fetchCategories } from '../../lib/categories'
@@ -25,44 +26,43 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
   return { paths: slugs.map((s) => ({ params: { slug: s } })), fallback: 'blocking' }
 }
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps<FilterPageProps> = async (ctx) => {
   const { params } = ctx
   const [filterType, filterQuery] = params!.slug as any
 
   switch (filterType) {
     case 'category':
-      return { props: { products: await fetchProductsByCategory(filterQuery) } }
+      const category = (await fetchCategories(filterQuery))[0]
+      return {
+        props: {
+          pageTitle: `${category?.title ?? filterQuery} | ЕДНА Е МАЈКА`,
+          products: await fetchProductsByCategory(filterQuery)
+        }
+      }
     case 'producer':
-      const result = await fetchProductsByProducer(filterQuery)
-      return { props: { products: result.products, producerInfo: result.producer } }
+      try {
+        const result = await fetchProductsByProducer(filterQuery)
+        return {
+          props: {
+            pageTitle: `${result.producer.name} | ЕДНА Е МАЈКА`,
+            products: result.products,
+            producerInfo: result.producer
+          }
+        }
+      } catch (e) {
+        console.error(`Filtering for invalid user ->${filterQuery}<-`, e)
+      }
     case 'search':
-      return { props: { products: await fetchProductsBySearchQuery(filterQuery) } }
+      return {
+        props: { pageTitle: `${filterQuery} | ЕДНА Е МАЈКА`, products: await fetchProductsBySearchQuery(filterQuery) }
+      }
     default:
-      return { props: { products: [] } }
+      return { props: { pageTitle: 'ЕДНА Е МАЈКА?', products: [] } }
   }
 }
 
-// export const getServerSideProps: GetServerSideProps<FilterPageProps, { slug: [FilterType, string] }> = async (ctx) => {
-//   const { params } = ctx
-
-//   const [filterType, filterQuery] = params!.slug
-
-//   console.log(filterType, filterQuery)
-
-//   switch (filterType) {
-//     case 'category':
-//       return { props: { products: await fetchProductsByCategory(filterQuery) } }
-//     case 'producer':
-//       const result = await fetchProductsByProducer(filterQuery)
-//       return { props: { products: result.products, producerInfo: result.producer } }
-//     case 'search':
-//       return { props: { products: await fetchProductsBySearchQuery(filterQuery) } }
-//     default:
-//       return { props: { products: [] } }
-//   }
-// }
-
 type FilterPageProps = {
+  pageTitle: string
   products: { producer: Producer; product: Product }[]
   producerInfo?: Producer
   categoryInfo?: Category
@@ -70,10 +70,15 @@ type FilterPageProps = {
 
 const FilterPage = (props: FilterPageProps) => {
   return (
-    <div>
-      {props.producerInfo && <ProducerInfo producer={props.producerInfo} />}
-      <ProductCardsGroup products={props.products} />
-    </div>
+    <>
+      <Head>
+        <title>{props.pageTitle}</title>
+      </Head>
+      <div>
+        {props.producerInfo && <ProducerInfo producer={props.producerInfo} />}
+        <ProductCardsGroup products={props.products} />
+      </div>
+    </>
   )
 }
 
