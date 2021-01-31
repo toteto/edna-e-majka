@@ -26,7 +26,6 @@ const Home = ({ allProducts }: InferGetStaticPropsType<typeof getStaticProps>) =
     <>
       <Head>
         <title>ЕДНА Е МАЈКА</title>
-        <meta property="og:description" content="Тука се сите домашни производи." />
       </Head>
       <div>
         <Message style={{ margin: 10 }}>

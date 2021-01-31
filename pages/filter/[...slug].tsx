@@ -73,6 +73,7 @@ const FilterPage = (props: FilterPageProps) => {
     <>
       <Head>
         <title>{props.pageTitle}</title>
+        <meta property="og:title" key="og:title" content={props.pageTitle} />
       </Head>
       <div>
         {props.producerInfo && <ProducerInfo producer={props.producerInfo} />}

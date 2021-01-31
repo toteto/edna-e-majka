@@ -28,10 +28,14 @@ function MyApp(appProps: AppProps) {
   return (
     <div className={styles.appContainer}>
       <Head>
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="ЕДНА Е МАЈКА" />
+        <meta property="og:title" key="og:title" content="ЕДНА Е МАЈКА" />
+        <meta property="og:description" key="og:description" content="Тука се сите домашни производи." />
+        <meta property="og:image" key="og:image" content="/edna-e-majka-og.jpg" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <meta property="og:image" content="/edna-e-majka-og.jpg" />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <div className={styles.header}>
@@ -80,7 +84,7 @@ function MyApp(appProps: AppProps) {
           </ContactModal>
         </div>
         <div style={{ marginTop: 5 }}>
-          © 2011 - 2021{' '}
+          © 2021{' '}
           <Link href="/" passHref>
             <a>ednaemajka.mk</a>
           </Link>
