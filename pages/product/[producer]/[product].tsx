@@ -33,6 +33,8 @@ const ProductPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     <>
       <Head>
         <title>{`${props.product.title} | ЕДНА Е МАЈКА`}</title>
+        <meta property="og:description" content={props.product.shortDescription} />
+        <meta property="og:image" content={props.product.images[0]} />
       </Head>
       <div className={styles.container}>
         <ProductImages {...props} />
