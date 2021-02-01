@@ -61,28 +61,28 @@ function MyApp(appProps: AppProps) {
           onKeyDown={(e: any) => e.code === 'Enter' && triggerProductSearch()}
           action={{ color: 'red', icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
         />
-      </div>
-      <div style={{ flexGrow: 1 }}>
-        <appProps.Component {...appProps.pageProps} />
-      </div>
-      <div className={styles.footer}>
         <div>
-          <a className={styles.footerSocialIcon} href="https://www.facebook.com/ednaemajka.mk">
+          <a className={styles.headerSocialIcon} href="https://www.facebook.com/ednaemajka.mk">
             <Icon link name="facebook" size="large" color="blue" />
           </a>
-          <a className={styles.footerSocialIcon} href="https://m.me/ednaemajka.mk">
+          <a className={styles.headerSocialIcon} href="https://m.me/ednaemajka.mk">
             <Icon link name="facebook messenger" size="large" color="blue" />
           </a>
-          <a className={styles.footerSocialIcon} href="https://www.instagram.com/ednaemajka.mk/">
+          <a className={styles.headerSocialIcon} href="https://www.instagram.com/ednaemajka.mk/">
             <Icon link name="instagram" size="large" color="purple" />
           </a>
           <ContactModal>
-            <div className={styles.footerSocialIcon} style={{ cursor: 'pointer' }}>
+            <div className={styles.headerSocialIcon} style={{ cursor: 'pointer' }}>
               <Image src="/favicon-32x32.png" inline style={{ width: 20, verticalAlign: 'middle', marginRight: 3 }} />
               Контакт
             </div>
           </ContactModal>
         </div>
+      </div>
+      <div style={{ flexGrow: 1 }}>
+        <appProps.Component {...appProps.pageProps} />
+      </div>
+      <div className={styles.footer}>
         <div style={{ marginTop: 5 }}>
           © 2021{' '}
           <Link href="/" passHref>
