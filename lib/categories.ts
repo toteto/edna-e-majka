@@ -6,6 +6,10 @@ export type Category = {
 
 const categories: Category[] = [
   {
+    id: 'fruits',
+    title: 'Овошје'
+  },
+  {
     id: 'bee-products',
     title: 'Пчелни производи'
   },
@@ -24,6 +28,14 @@ const categories: Category[] = [
   {
     id: 'jams-jelly',
     title: 'Слатко и џем'
+  },
+  {
+    id: 'forest-products',
+    title: 'Шумски плодови'
+  },
+  {
+    id: 'mushrooms',
+    title: 'Печурки'
   }
 ]
 
