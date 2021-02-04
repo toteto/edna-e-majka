@@ -9,10 +9,12 @@ import { Category, fetchCategories } from '../lib/categories'
 import { AppProps } from 'next/dist/next-server/lib/router/router'
 import { useState } from 'react'
 import { ContactModal } from '../components/contact-modal'
+import { fetchProducers, Producer } from '../lib/products'
 
 MyApp.getInitialProps = async () => {
   const categories = await fetchCategories()
-  return { categories }
+  const producers = (await fetchProducers()).sort((a, b) => a.name.localeCompare(b.name))
+  return { categories, producers }
 }
 
 function MyApp(appProps: AppProps) {
@@ -42,17 +44,30 @@ function MyApp(appProps: AppProps) {
         <Link href="/" passHref>
           <Image className={styles.logo} src="/logo.png" />
         </Link>
-        <Dropdown
-          className={styles.categories}
-          text="Категории"
-          icon="angle down"
-          options={appProps.categories.map((category: Category) => ({
-            key: category.id,
-            text: category.title,
-            active: false,
-            onClick: () => router.push(`/filter/category/${category.id}`)
-          }))}
-        />
+        <div>
+          <Dropdown
+            className={styles.headerDropdown}
+            text="Производители"
+            icon="angle down"
+            options={appProps.producers.map((producer: Producer) => ({
+              key: producer.id,
+              text: producer.name,
+              active: false,
+              onClick: () => router.push(`/filter/producer/${producer.id}`)
+            }))}
+          />
+          <Dropdown
+            className={styles.headerDropdown}
+            text="Категории"
+            icon="angle down"
+            options={appProps.categories.map((category: Category) => ({
+              key: category.id,
+              text: category.title,
+              active: false,
+              onClick: () => router.push(`/filter/category/${category.id}`)
+            }))}
+          />
+        </div>
         <Input
           className={styles.search}
           placeholder={'Пребарај сите производи'}

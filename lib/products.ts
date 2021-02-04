@@ -167,6 +167,11 @@ export const fetchProductsGroupedByProducers = async () => {
   })
 }
 
+export const fetchProducers = async () => {
+  const ids = await fetchProducerIds()
+  return Promise.all(ids.map((id) => fetchProducer(id)))
+}
+
 export const fetchProducerIds = async () => {
   return fs.readdirSync(productsDir())
 }
