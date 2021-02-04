@@ -12,7 +12,7 @@ export const ContactModal = (props: { children: React.ReactNode }) => {
         <Modal.Description>
           <Header icon="heart" content="Многу сакаме кога ни пишувате" />
           <p>
-            Слободно можете да ни пишите на било која од социалните мрежи или на нашата мејл адреса. Ветуваме, ќе
+            Слободно можете да ни пишете на било која од социалните мрежи или на нашата меил адреса. Ветуваме, ќе
             вратиме во најкус можен рок.
           </p>
           <div className={'ui labels'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -40,7 +40,7 @@ export const ContactModal = (props: { children: React.ReactNode }) => {
               detail="@ednaemajka.mk"
               href="https://www.instagram.com/ednaemajka.mk/ "
             />
-            <Label color="red" icon="mail" content="Мејл" detail="info@ednaemajka.mk" />
+            <Label color="red" icon="mail" content="Меил" detail="info@ednaemajka.mk" />
           </div>
         </Modal.Description>
       </Modal.Content>
