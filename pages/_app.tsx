@@ -31,7 +31,7 @@ MyApp.getInitialProps = async () => {
 
 function MyApp(appProps: AppProps) {
   useEffect(() => {
-    console.log(firebase.initializeApp(firebaseConfig))
+    firebase.initializeApp(firebaseConfig)
   }, [])
 
   const [searchTerm, setSearchTerm] = useState<string>('')
