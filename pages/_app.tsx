@@ -7,9 +7,21 @@ import styles from '../styles/_app.module.css'
 import { Dropdown, Input, Image, Icon, Button } from 'semantic-ui-react'
 import { Category, fetchCategories } from '../lib/categories'
 import { AppProps } from 'next/dist/next-server/lib/router/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ContactModal } from '../components/contact-modal'
 import { fetchProducers, Producer } from '../lib/products'
+import { firebase } from '@firebase/app'
+import '@firebase/analytics'
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDxVD88vytUHJ3dv8Dq9KP9Pil_dP4JLGI',
+  authDomain: 'edna-e-majka.firebaseapp.com',
+  projectId: 'edna-e-majka',
+  storageBucket: 'edna-e-majka.appspot.com',
+  messagingSenderId: '775290058986',
+  appId: '1:775290058986:web:7fa1b96bf2c8b41a19bf93',
+  measurementId: 'G-48G0SB72V7'
+}
 
 MyApp.getInitialProps = async () => {
   const categories = await fetchCategories()
@@ -18,12 +30,17 @@ MyApp.getInitialProps = async () => {
 }
 
 function MyApp(appProps: AppProps) {
+  useEffect(() => {
+    console.log(firebase.initializeApp(firebaseConfig))
+  }, [])
+
   const [searchTerm, setSearchTerm] = useState<string>('')
   const router = useRouter()
 
   const triggerProductSearch = () => {
     if (searchTerm) {
       router.push(`/filter/search/${searchTerm}`)
+      firebase.analytics().logEvent('search', { search_term: searchTerm })
     }
   }
 
@@ -53,7 +70,10 @@ function MyApp(appProps: AppProps) {
               key: producer.id,
               text: producer.name,
               active: false,
-              onClick: () => router.push(`/filter/producer/${producer.id}`)
+              onClick: () => {
+                firebase.analytics().logEvent('select_content', { content_type: 'producer', content_id: producer.id })
+                router.push(`/filter/producer/${producer.id}`)
+              }
             }))}
           />
           <Dropdown
@@ -64,7 +84,10 @@ function MyApp(appProps: AppProps) {
               key: category.id,
               text: category.title,
               active: false,
-              onClick: () => router.push(`/filter/category/${category.id}`)
+              onClick: () => {
+                firebase.analytics().logEvent('select_content', { content_type: 'category', content_id: category.id })
+                router.push(`/filter/category/${category.id}`)
+              }
             }))}
           />
         </div>
