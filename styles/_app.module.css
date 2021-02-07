@@ -1,7 +1,7 @@
 .appContainer {
   display: flex;
   margin: auto;
-  max-width: 1060px;
+  max-width: 80rem;
   min-height: 100vh;
   flex-direction: column;
   justify-content: flex-start;
@@ -38,6 +38,7 @@
 .headerSocialIcon {
   display: inline-block;
   padding: 10px 5px;
+  color: white;
 }
 
 .footer {

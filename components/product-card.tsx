@@ -9,7 +9,7 @@ import { useState } from 'react'
 export const ProductCard = ({ producer, product }: { producer: Producer; product: Product }) => {
   return (
     <Link passHref href={`/product/${producer.id}/${product.id}`}>
-      <Card link key={`${producer.id}-${product.id}`}>
+      <Card color="yellow" link key={`${producer.id}-${product.id}`}>
         <NextImage src={product.images[0]} width={256} height={192} objectFit="cover" />
         <Card.Content>
           <Card.Header>{product.title}</Card.Header>

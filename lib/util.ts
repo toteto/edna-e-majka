@@ -54,3 +54,9 @@ export function latinToCyrillic(text: string): string {
 
   return result
 }
+
+export function validateEmail(email: string): boolean {
+  return !!email.match(
+    /^((([!#$%&'*+\-/=?^_`{|}~\w])|([!#$%&'*+\-/=?^_`{|}~\w][!#$%&'*+\-/=?^_`{|}~\.\w]{0,}[!#$%&'*+\-/=?^_`{|}~\w]))[@]\w+([-.]\w+)*\.\w+([-.]\w+)*)$/
+  )
+}
