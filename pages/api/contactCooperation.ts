@@ -15,7 +15,7 @@ const handler: NextApiHandler = async (req, res) => {
     port: 465,
     auth: {
       user: 'antonioivanovski@gmail.com',
-      pass: '6q2J9H1f4PVN'
+      pass: 'asfBLAm1GqLw'
     }
   })
 
