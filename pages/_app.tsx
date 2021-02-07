@@ -99,6 +99,7 @@ function MyApp(appProps: AppProps) {
               onKeyDown={(e: any) => e.code === 'Enter' && triggerProductSearch()}
               action={{ color: 'red', icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
             />
+            <UserHeaderInfo />
           </div>
           <div style={{ flexGrow: 1 }}>
             <appProps.Component {...appProps.pageProps} />
@@ -108,6 +109,39 @@ function MyApp(appProps: AppProps) {
       </ProvideAuth>
     </FirebaseAppProvider>
   )
+}
+
+const UserHeaderInfo = () => {
+  const auth = useAuth()
+
+  if (auth.user) {
+    return (
+      <Dropdown
+        icon={null}
+        trigger={
+          <div>
+            <Image src="/assets/avatar-placeholder.jpg" avatar />
+            <span>{auth.user.email}</span>
+          </div>
+        }
+        options={[
+          { key: 'manage-shop', text: 'Менаџирај продавница (наскоро)', disabled: true, active: false },
+          {
+            key: 'logout',
+            text: 'Одјави се',
+            active: false,
+            onClick: () => auth.signout()
+          }
+        ]}
+      />
+    )
+  } else {
+    return (
+      <AuthModal>
+        <span style={{ cursor: 'pointer' }}>Најави се</span>
+      </AuthModal>
+    )
+  }
 }
 
 const Footer = () => (

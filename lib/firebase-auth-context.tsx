@@ -45,7 +45,10 @@ function useProvideAuth(firebaseAuth: FirebaseAuth): AuthContextType {
   const signup = (email: string, password: string) => {
     return firebaseAuth.createUserWithEmailAndPassword(email, password).then((response) => {
       setUser(response.user ?? undefined)
-      user?.sendEmailVerification().catch((e) => console.error(e))
+      response.user
+        ?.sendEmailVerification()
+        .then(() => console.log(`Verification email send to ${email}`))
+        .catch((e) => console.error(e))
       return response.user
     })
   }
