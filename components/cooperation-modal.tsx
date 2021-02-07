@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, Form, Button } from 'semantic-ui-react'
+import { Modal, Form, Button, Header } from 'semantic-ui-react'
 import { validateEmail } from '../lib/util'
 
 export const CooperationContactModal = (props: { children: React.ReactNode }) => {
@@ -22,10 +22,8 @@ export const CooperationContactModal = (props: { children: React.ReactNode }) =>
     >
       <Modal.Header>Соработка</Modal.Header>
       <Modal.Content>
+        <Header>Пополнете ја формата за соработка и стапи во контакт со нашиот тим.</Header>
         <Modal.Description>
-          <p>
-            Пишете ни преку формата или е-маил на <a href="mailto://sorabotka@ednaemajka.mk">sorabotka@ednaemajka.mk</a>
-          </p>
           <Form loading={loading}>
             <Form.Input value={name} onChange={(e) => setName(e.target.value)} label="Име и презиме" required />
             <Form.Input value={phone} onChange={(e) => setPhone(e.target.value)} label="Телефонски број" required />
