@@ -1,7 +1,7 @@
 import styles from './product-card.module.css'
 import NextImage from 'next/image'
 import Link from 'next/link'
-import { Card, Header, Statistic, Menu, Icon } from 'semantic-ui-react'
+import { Card, Header, Statistic, Menu, Icon, Image } from 'semantic-ui-react'
 import { Producer, Product } from '../lib/products'
 import format from 'date-fns/format'
 import { useState } from 'react'
@@ -9,8 +9,8 @@ import { useState } from 'react'
 export const ProductCard = ({ producer, product }: { producer: Producer; product: Product }) => {
   return (
     <Link passHref href={`/product/${producer.id}/${product.id}`}>
-      <Card color="yellow" link key={`${producer.id}-${product.id}`}>
-        <NextImage src={product.images[0]} width={256} height={192} objectFit="cover" />
+      <Card fluid color="yellow" key={`${producer.id}-${product.id}`} style={{ margin: 0 }}>
+        <NextImage src={product.images[0]} width={300} height={225} objectFit="cover" />
         <Card.Content>
           <Card.Header>{product.title}</Card.Header>
           <Card.Meta>
@@ -79,7 +79,7 @@ export const ProductCardsGroup = (props: {
           Цена
         </Menu.Item>
       </Menu>
-      <Card.Group className={styles.productCardGroup} centered doubling itemsPerRow={4}>
+      <div className={styles.productCardGroup}>
         {props.products
           .sort((p1, p2) => {
             const score =
@@ -94,7 +94,7 @@ export const ProductCardsGroup = (props: {
           .map((p) => (
             <ProductCard key={`${p.producer.id}-${p.product.id}`} {...p} />
           ))}
-      </Card.Group>
+      </div>
     </div>
   )
 }

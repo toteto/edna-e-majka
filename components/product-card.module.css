@@ -1,4 +1,6 @@
 .productCardGroup {
-  margin: 0px !important;
-  padding: 10px 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
 }
