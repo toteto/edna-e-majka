@@ -9,7 +9,28 @@ export type ContactCooperation = {
   message: string
 }
 
+const reCaptchaSecret = '6LcTvVUaAAAAANSHVdXxXvuY3T4BpQ0N_haSRgyQ'
+
 const handler: NextApiHandler = async (req, res) => {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+
+  const verify: { success: boolean; score: number; 'error-codes': string[] } = await fetch(
+    'https://www.google.com/recaptcha/api/siteverify',
+    {
+      method: 'POST',
+      headers: [['Content-Type', 'application/x-www-form-urlencoded']],
+      body: `secret=${reCaptchaSecret}&response=${JSON.parse(req.body).token}&remoteip=ip`
+    }
+  )
+    .then((res) => res.json())
+    .catch(() => ({ success: false, score: 0, 'error-codes': ['my-failed-request'] }))
+  console.log(ip, verify)
+
+  if (verify.success || verify.score < 0.3) {
+    res.status(403).end(`Failed reCaptcha verify. codes: ${verify['error-codes']}`)
+    return
+  }
+
   const transport = nodemailer.createTransport({
     host: 'smtppro.zoho.eu',
     port: 465,
