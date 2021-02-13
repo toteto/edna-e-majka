@@ -24,9 +24,9 @@ const handler: NextApiHandler = async (req, res) => {
   )
     .then((res) => res.json())
     .catch(() => ({ success: false, score: 0, 'error-codes': ['my-failed-request'] }))
-  console.log(ip, verify)
 
-  if (verify.success || verify.score < 0.3) {
+  if (!verify.success || verify.score < 0.3) {
+    console.error({ ip, ...verify })
     res.status(403).end(`Failed reCaptcha verify. codes: ${verify['error-codes']}`)
     return
   }
