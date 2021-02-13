@@ -21,7 +21,7 @@ export const CooperationContactModal = (props: { children: React.ReactNode }) =>
         <Header>Пополнете ја формата за соработка и стапи во контакт со нашиот тим.</Header>
         <Modal.Description>
           <GoogleReCaptchaProvider reCaptchaKey="6LcTvVUaAAAAAN04dlq1LDH7-wZ5vzplvi-Q1wse">
-            <CooperationForm onSuccess={() => setOpen(false)} />
+            <CooperationForm onSuccess={() => {}} />
           </GoogleReCaptchaProvider>
         </Modal.Description>
       </Modal.Content>
@@ -31,6 +31,7 @@ export const CooperationContactModal = (props: { children: React.ReactNode }) =>
 
 const CooperationForm = (props: { onSuccess: () => void }) => {
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [formError, setFormError] = useState('')
   const { executeRecaptcha } = useGoogleReCaptcha()
 
@@ -41,6 +42,7 @@ const CooperationForm = (props: { onSuccess: () => void }) => {
   const onSubmit = async (data: any) => {
     setLoading(true)
     setFormError('')
+    setSuccess(false)
     executeRecaptcha()
       .then((token) =>
         fetch('/api/contactCooperation', {
@@ -52,6 +54,7 @@ const CooperationForm = (props: { onSuccess: () => void }) => {
         if (r.ok) {
           reset()
           setLoading(false)
+          setSuccess(true)
           props.onSuccess()
         } else {
           throw Error(await r.text())
@@ -64,8 +67,13 @@ const CooperationForm = (props: { onSuccess: () => void }) => {
   }
 
   return (
-    <Form error={formError.length > 0} loading={loading} onSubmit={handleSubmit(onSubmit)}>
-      <Message error header="Грешка при праќање на порака. Обидете се повторно." content={formError} />
+    <Form error={formError.length > 0} success={success} loading={loading} onSubmit={handleSubmit(onSubmit)}>
+      <Message
+        error
+        header="Грешка при праќање на порака. Обидете се повторно или пратете ни е-маил на sorabotka@ednaemajka.mk."
+        content={formError}
+      />
+      <Message success header="Успешно испратена порака за соработка. Нашиот тим ќе ве контактира наскоро." />
       <Controller
         name="name"
         control={control}
