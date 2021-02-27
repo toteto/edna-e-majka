@@ -7,8 +7,6 @@
   justify-content: flex-start;
   align-items: stretch;
   background-color: #fff;
-  border-left: solid 1px #ddd;
-  border-right: solid 1px #ddd;
 }
 
 .header {
@@ -19,7 +17,6 @@
   flex-wrap: wrap;
   justify-content: space-evenly;
   padding: 10px;
-  border-bottom: solid 1px #ddd;
 }
 
 .logo {
@@ -42,6 +39,7 @@
 }
 
 .footer {
+  align-self: stretch;
   margin: 10px 0px;
   padding: 10px 0px;
   display: flex;

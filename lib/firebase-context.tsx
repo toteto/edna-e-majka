@@ -1,5 +1,5 @@
-import { createContext, useContext } from 'react'
-import { firebase } from '@firebase/app'
+import { createContext, useContext, useEffect, useRef } from 'react'
+import firebase from 'firebase/app'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDxVD88vytUHJ3dv8Dq9KP9Pil_dP4JLGI',
@@ -16,7 +16,13 @@ const FirebaseAppContext = createContext(
 )
 
 export const FirebaseAppProvider: React.FC = ({ children }) => {
-  return <FirebaseAppContext.Provider value={firebase.app()}>{children}</FirebaseAppContext.Provider>
+  const firebaseAppRef = useRef(firebase.app())
+
+  useEffect(() => {
+    firebaseAppRef.current.analytics() // initialize analytics
+  }, [])
+
+  return <FirebaseAppContext.Provider value={firebaseAppRef.current}>{children}</FirebaseAppContext.Provider>
 }
 
 export const useFirebaseApp = () => useContext(FirebaseAppContext)
