@@ -8,11 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@firebase/analytics": "^0.6.2",
-    "@firebase/app": "^0.6.14",
-    "@firebase/auth": "^0.16.3",
-    "@firebase/firestore": "^2.1.5",
     "date-fns": "^2.16.1",
+    "firebase": "^8.2.7",
     "fuse.js": "^6.4.6",
     "gray-matter": "^4.0.2",
     "next": "10.0.4",
@@ -26,7 +23,8 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.1",
     "strip-markdown": "^4.0.0",
-    "swiper": "^6.4.5"
+    "swiper": "^6.4.5",
+    "uuidv4": "^6.2.6"
   },
   "devDependencies": {
     "@types/node": "^14.14.19",
