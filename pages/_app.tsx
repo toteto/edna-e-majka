@@ -99,12 +99,13 @@ function MyApp(appProps: AppProps) {
               onKeyDown={(e: any) => e.code === 'Enter' && triggerProductSearch()}
               action={{ color: 'red', icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
             />
+            <UserHeaderInfo />
           </div>
           <div style={{ flexGrow: 1 }}>
             <appProps.Component {...appProps.pageProps} />
           </div>
-          <Footer />
         </div>
+        <Footer />
       </ProvideAuth>
     </FirebaseAppProvider>
   )
@@ -119,8 +120,8 @@ const UserHeaderInfo = () => {
         icon={null}
         trigger={
           <div>
-            <Image src="/assets/avatar-placeholder.jpg" avatar />
-            <span>{auth.user.email}</span>
+            <Image src={auth.user.photoURL ?? '/assets/avatar-placeholder.jpg'} avatar />
+            <span>{auth.user.displayName ?? auth.user.email}</span>
           </div>
         }
         options={[

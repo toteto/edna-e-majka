@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext, createContext } from 'react'
-import '@firebase/auth'
-import { User as FirebaseUser, FirebaseAuth } from '@firebase/auth-types'
 import { useFirebaseApp } from './firebase-context'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 
 type AuthContextType = {
-  user?: FirebaseUser
+  user?: firebase.User
   signin: (email: string, password: string) => Promise<any>
-  signup: (email: string, password: string) => Promise<any>
+  signup: (displayName: string, email: string, password: string) => Promise<any>
   signout: () => Promise<any>
   sendPasswordResetEmail: (email: string) => Promise<any>
   confirmPasswordReset: (code: string, password: string) => Promise<any>
@@ -32,8 +32,8 @@ export const useAuth = () => {
   return useContext(AuthContext)
 }
 
-function useProvideAuth(firebaseAuth: FirebaseAuth): AuthContextType {
-  const [user, setUser] = useState<FirebaseUser | undefined>()
+function useProvideAuth(firebaseAuth: firebase.auth.Auth): AuthContextType {
+  const [user, setUser] = useState<firebase.User | undefined>()
 
   const signin = (email: string, password: string) => {
     return firebaseAuth.signInWithEmailAndPassword(email, password).then((response) => {
@@ -42,14 +42,10 @@ function useProvideAuth(firebaseAuth: FirebaseAuth): AuthContextType {
     })
   }
 
-  const signup = (email: string, password: string) => {
-    return firebaseAuth.createUserWithEmailAndPassword(email, password).then((response) => {
-      setUser(response.user ?? undefined)
-      response.user
-        ?.sendEmailVerification()
-        .then(() => console.log(`Verification email send to ${email}`))
-        .catch((e) => console.error(e))
-      return response.user
+  const signup = (displayName: string, email: string, password: string) => {
+    return firebaseAuth.createUserWithEmailAndPassword(email, password).then(async (response) => {
+      await response.user?.sendEmailVerification().catch(console.error)
+      await response.user?.updateProfile({ displayName }).catch(console.error)
     })
   }
 
