@@ -9,6 +9,7 @@ export const SignUp = (props: { onSuccess: () => void }) => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
@@ -30,14 +31,27 @@ export const SignUp = (props: { onSuccess: () => void }) => {
     setError('')
     setLoading(true)
     auth
-      ?.signup(email, password)
-      .then(() => props.onSuccess())
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false))
+      ?.signup(name, email, password)
+      .then(() => {
+        setLoading(false)
+        props.onSuccess()
+      })
+      .catch((e) => {
+        console.error(e)
+        setError(e.message)
+        setLoading(false)
+      })
   }
 
   return (
     <Form loading={auth == null || loading} error={error.length > 0} onSubmit={handleSubmit}>
+      <Form.Input
+        fluid
+        label="Име и презиме"
+        placeholder="Вашето име и презиме"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
       <Form.Input
         fluid
         label="Електронска Пошта"
@@ -62,7 +76,7 @@ export const SignUp = (props: { onSuccess: () => void }) => {
         onChange={(e) => setPasswordConfirmation(e.target.value)}
       />
       <Message error header="Грешка при регистрација" content={error} />
-      <Form.Button disabled={loading} positive>
+      <Form.Button fluid disabled={loading} positive>
         Потврди
       </Form.Button>
     </Form>
@@ -106,7 +120,7 @@ export const SignIn = (props: { onSuccess: () => void }) => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <Message error header="Грешка при најава" content={error} />
-      <Form.Button disabled={loading} positive>
+      <Form.Button fluid disabled={loading} positive>
         Потврди
       </Form.Button>
     </Form>
@@ -152,7 +166,7 @@ const ForgottenPassword = (props: { onSuccess: () => void }) => {
         content={error}
       />
       {!success && (
-        <Form.Button disabled={loading} positive>
+        <Form.Button fluid disabled={loading} positive>
           Потврди
         </Form.Button>
       )}

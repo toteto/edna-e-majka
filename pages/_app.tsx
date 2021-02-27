@@ -99,7 +99,6 @@ function MyApp(appProps: AppProps) {
               onKeyDown={(e: any) => e.code === 'Enter' && triggerProductSearch()}
               action={{ color: 'red', icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
             />
-            <UserHeaderInfo />
           </div>
           <div style={{ flexGrow: 1 }}>
             <appProps.Component {...appProps.pageProps} />
