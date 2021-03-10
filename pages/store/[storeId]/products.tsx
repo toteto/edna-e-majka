@@ -18,7 +18,6 @@ import { useFirebaseApp } from '../../../lib/firebase-context'
 import firebase from 'firebase'
 import 'firebase/firestore'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
-import { Category } from '../../../lib/categories2'
 import { categories, products } from '../../../lib'
 import { v4 as uuid } from 'uuid'
 
@@ -107,7 +106,7 @@ const ManageStoreProducts = () => {
 }
 
 const ProductForm = (props: { storeId: string; product?: products.Product }) => {
-  const [allCategories, setAllCategories] = useState<Category[] | 'loading'>('loading')
+  const [allCategories, setAllCategories] = useState<categories.Category[] | 'loading'>('loading')
   const [submitStatus, setSubmitStatus] = useState<'loading' | 'success' | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const firebaseApp = useFirebaseApp()
