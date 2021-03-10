@@ -1,9 +1,11 @@
+import styles from '../styles/Home.module.css'
 import Head from 'next/head'
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import { ProductCardsGroup } from '../components/product-card'
-import { Message } from 'semantic-ui-react'
+import { Image, Message } from 'semantic-ui-react'
 import { ContactModal } from '../components/contact-modal'
-import { products, stores } from '../lib'
+import { categories, products, stores } from '../lib'
+import Link from 'next/link'
 
 export const getStaticProps = async (_context: GetStaticPropsContext) => {
   const allProducts = await products.getAll()
@@ -12,15 +14,17 @@ export const getStaticProps = async (_context: GetStaticPropsContext) => {
     []
   )
   const allStores = await stores.getMultiple(storeIds)
+  const allCategories = await categories.getAll()
 
   return {
     props: {
-      productCards: allProducts.map((product) => ({ product, store: allStores.find((s) => s.id === product.store)! }))
+      productCards: allProducts.map((product) => ({ product, store: allStores.find((s) => s.id === product.store)! })),
+      categories: allCategories
     }
   }
 }
 
-const Home = ({ productCards }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       <Head>
@@ -51,7 +55,17 @@ const Home = ({ productCards }: InferGetStaticPropsType<typeof getStaticProps>) 
             </ContactModal>
           </p>
         </Message>
-        <ProductCardsGroup products={productCards} />
+        <div className={styles.categoryIcons}>
+          {props.categories.map((c) => (
+            <Link href={`/filter/category/${c.id}`}>
+              <div key={c.id} className={styles.categoryIcon}>
+                <Image centered src={`/assets/category-icons/${c.id}.svg`} size="tiny" />
+                <p style={{ paddingTop: 5 }}>{c.title}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+        <ProductCardsGroup products={props.productCards} />
       </div>
     </>
   )

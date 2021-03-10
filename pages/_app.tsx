@@ -13,15 +13,14 @@ import 'firebase/analytics'
 import 'firebase/firestore'
 import { ProvideAuth, useAuth } from '../lib/firebase-auth-context'
 import { AuthModal } from '../components/auth-components'
-import { getFirebaseApp, FirebaseAppProvider } from '../lib/firebase-context'
+import { FirebaseAppProvider } from '../lib/firebase-context'
 import { CooperationContactModal } from '../components/cooperation-modal'
-import { categories, stores } from '../lib'
+import { stores } from '../lib'
 
 MyApp.getInitialProps = async () => {
   const allStores = await stores.getAll()
-  const allCategories = await categories.getAll(getFirebaseApp())
 
-  return { categories: allCategories, stores: allStores }
+  return { stores: allStores }
 }
 
 function MyApp(appProps: AppProps) {
@@ -70,22 +69,6 @@ function MyApp(appProps: AppProps) {
                   onClick: () => {
                     firebase.analytics().logEvent('select_content', { content_type: 'producer', content_id: store.id })
                     router.push(`/filter/store/${store.id}`)
-                  }
-                }))}
-              />
-              <Dropdown
-                className={styles.headerDropdown}
-                text="Категории"
-                icon="angle down"
-                options={appProps.categories.map((category: categories.Category) => ({
-                  key: category.id,
-                  text: category.title,
-                  active: false,
-                  onClick: () => {
-                    firebase
-                      .analytics()
-                      .logEvent('select_content', { content_type: 'category', content_id: category.id })
-                    router.push(`/filter/category/${category.id}`)
                   }
                 }))}
               />

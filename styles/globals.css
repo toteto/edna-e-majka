@@ -14,15 +14,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
-#swiper-color .swiper-button-next {
-  color: white;
-}
-
-#swiper-color .swiper-button-prev {
-  color: white;
-}
-
-#swiper-color .swiper-pagination-bullet {
-  background: white;
-}

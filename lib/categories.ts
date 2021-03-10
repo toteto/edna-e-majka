@@ -17,5 +17,9 @@ export function getAll(firebaseApp: firebase.app.App = getFirebaseApp()): Promis
     .collection('misc')
     .doc('categories')
     .get()
-    .then((s) => Object.entries(s.data() as any).map(([id, title]) => ({ id, title: title as string })))
+    .then((s) =>
+      Object.entries(s.data() as any)
+        .map(([id, title]) => ({ id, title: title as string }))
+        .filter((c) => c.id !== 'misc')
+    )
 }
