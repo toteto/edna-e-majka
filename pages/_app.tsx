@@ -13,13 +13,13 @@ import 'firebase/analytics'
 import 'firebase/firestore'
 import { ProvideAuth, useAuth } from '../lib/firebase-auth-context'
 import { AuthModal } from '../components/auth-components'
-import { FirebaseAppProvider } from '../lib/firebase-context'
+import { getFirebaseApp, FirebaseAppProvider } from '../lib/firebase-context'
 import { CooperationContactModal } from '../components/cooperation-modal'
 import { categories, stores } from '../lib'
 
 MyApp.getInitialProps = async () => {
-  const allStores = await stores.getAll(firebase.app())
-  const allCategories = await categories.getAll(firebase.app())
+  const allStores = await stores.getAll()
+  const allCategories = await categories.getAll(getFirebaseApp())
 
   return { categories: allCategories, stores: allStores }
 }

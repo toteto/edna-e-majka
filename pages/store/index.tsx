@@ -30,7 +30,7 @@ const StoreManagementHome = () => {
     if (userStoresIds === 'loading') return setUserStores('loading')
     if (userStoresIds.length === 0) return setUserStores([])
 
-    stores.getMultiple(firebaseApp, userStoresIds).then(setUserStores)
+    stores.getMultiple(userStoresIds, firebaseApp).then(setUserStores)
   }, [userStoresIds])
 
   if (userStores === 'loading') return <Loader active>Се вчитуваат вашите продавници</Loader>

@@ -11,9 +11,10 @@ const firebaseConfig = {
   measurementId: 'G-48G0SB72V7'
 }
 
-const FirebaseAppContext = createContext(
+export const getFirebaseApp = () =>
   firebase.apps.length === 0 ? firebase.initializeApp(firebaseConfig) : firebase.app()
-)
+
+const FirebaseAppContext = createContext(getFirebaseApp())
 
 export const FirebaseAppProvider: React.FC = ({ children }) => {
   const firebaseAppRef = useRef(firebase.app())

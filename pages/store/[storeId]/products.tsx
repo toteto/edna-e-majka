@@ -27,7 +27,7 @@ const ManageStoreProducts = () => {
   if (typeof storeId !== 'string') throw new Error(`Invalid storeId type ${typeof storeId}.`)
 
   const [storeProducts, setStoreProducts] = useState<products.Product[] | 'loading'>('loading')
-  useEffect(() => products.liveProductsForStore(firebaseApp, storeId, setStoreProducts), [])
+  useEffect(() => products.liveProductsForStore(storeId, setStoreProducts, firebaseApp), [])
 
   if (storeProducts === 'loading') return <Loader active>Се вчитуваат производите</Loader>
 

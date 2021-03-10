@@ -1,6 +1,7 @@
 import { categories } from '.'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import { getFirebaseApp } from './firebase-context'
 
 export type ProductVariant = {
   title: string
@@ -26,7 +27,7 @@ function mapFirebaseProduct(refId: string, data: any): Product {
   }
 }
 
-export function getAll(firebaseApp: firebase.app.App) {
+export function getAll(firebaseApp: firebase.app.App = getFirebaseApp()) {
   return firebaseApp
     .firestore()
     .collection('products')
@@ -34,7 +35,7 @@ export function getAll(firebaseApp: firebase.app.App) {
     .then((s) => s.docs.map((d) => mapFirebaseProduct(d.id, d.data())))
 }
 
-export function get(firebaseApp: firebase.app.App, id: string) {
+export function get(id: string, firebaseApp: firebase.app.App = getFirebaseApp()) {
   return firebaseApp
     .firestore()
     .collection('products')
@@ -43,7 +44,7 @@ export function get(firebaseApp: firebase.app.App, id: string) {
     .then((s) => mapFirebaseProduct(s.id, s.data()))
 }
 
-export function getMultiple(firebaseApp: firebase.app.App, ids: string[]) {
+export function getMultiple(ids: string[], firebaseApp: firebase.app.App = getFirebaseApp()) {
   return firebaseApp
     .firestore()
     .collection('products')
@@ -52,9 +53,11 @@ export function getMultiple(firebaseApp: firebase.app.App, ids: string[]) {
     .then((s) => s.docs.map((d) => mapFirebaseProduct(d.id, d.data())))
 }
 
-export function getByCategory(firebaseApp: firebase.app.App, category: string | categories.Category) {
-  const categoryPromise =
-    typeof category === 'string' ? categories.get(firebaseApp, category) : Promise.resolve(category)
+export function getByCategory(
+  category: string | categories.Category,
+  firebaseApp: firebase.app.App = getFirebaseApp()
+) {
+  const categoryPromise = typeof category === 'string' ? categories.get(category) : Promise.resolve(category)
 
   return categoryPromise.then((c) =>
     firebaseApp
@@ -66,7 +69,7 @@ export function getByCategory(firebaseApp: firebase.app.App, category: string | 
   )
 }
 
-export function getByStore(firebaseApp: firebase.app.App, store: string) {
+export function getByStore(store: string, firebaseApp: firebase.app.App = getFirebaseApp()) {
   return firebaseApp
     .firestore()
     .collection('products')
@@ -76,9 +79,9 @@ export function getByStore(firebaseApp: firebase.app.App, store: string) {
 }
 
 export function liveProductsForStore(
-  firebaseApp: firebase.app.App,
   storeId: string,
-  onChange: (products: Product[]) => void
+  onChange: (products: Product[]) => void,
+  firebaseApp: firebase.app.App = getFirebaseApp()
 ) {
   const unsub = firebaseApp
     .firestore()

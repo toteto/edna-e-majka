@@ -2,19 +2,18 @@ import { GetStaticProps, GetStaticPaths } from 'next'
 import Head from 'next/head'
 import { ProducerInfo } from '../../components/producer-info'
 import { categories, products, search, stores } from '../../lib'
-import firebase from 'firebase'
 import { ProductCardsGroup } from '../../components/product-card'
+import { getFirebaseApp } from '../../lib/firebase-context'
 
 type FilterType = 'category' | 'store' | 'search'
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
-  const firebaseApp = firebase.app()
   const slugs: [FilterType, string][] = []
 
-  const allCategories = await categories.getAll(firebaseApp)
+  const allCategories = await categories.getAll(getFirebaseApp())
   allCategories.forEach((c) => slugs.push(['category', c.id]))
 
-  const allStores = await stores.getAll(firebaseApp)
+  const allStores = await stores.getAll()
   allStores.forEach((s) => slugs.push(['store', s.id]))
 
   return { paths: slugs.map((s) => ({ params: { slug: s } })), fallback: 'blocking' }
@@ -23,13 +22,10 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 export const getStaticProps: GetStaticProps<FilterPageProps> = async (ctx) => {
   const { params } = ctx
   const [filterType, filterQuery] = params!.slug as any
-
-  const firebaseApp = firebase.app()
-
-  const allStores = await stores.getAll(firebaseApp)
+  const allStores = await stores.getAll()
   switch (filterType) {
     case 'search':
-      const searchProducts = await search.products(firebaseApp, filterQuery)
+      const searchProducts = await search.products(filterQuery)
       return {
         props: {
           pageTitle: `${filterQuery} | ЕДНА Е МАЈКА`,
@@ -37,8 +33,8 @@ export const getStaticProps: GetStaticProps<FilterPageProps> = async (ctx) => {
         }
       }
     case 'category':
-      const category = await categories.get(firebaseApp, filterQuery)
-      const categoryProducts = category == null ? [] : await products.getByCategory(firebaseApp, category)
+      const category = await categories.get(filterQuery)
+      const categoryProducts = category == null ? [] : await products.getByCategory(category)
 
       return {
         props: {
@@ -48,8 +44,8 @@ export const getStaticProps: GetStaticProps<FilterPageProps> = async (ctx) => {
         }
       }
     case 'store':
-      const store = await stores.get(firebaseApp, filterQuery)
-      const storeProducts = await products.getByStore(firebaseApp, filterQuery)
+      const store = await stores.get(filterQuery)
+      const storeProducts = await products.getByStore(filterQuery)
       return {
         props: {
           pageTitle: `${store.name} | ЕДНА Е МАЈКА`,

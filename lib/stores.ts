@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import { getFirebaseApp } from './firebase-context'
 
 export type Store = {
   id: string
@@ -28,7 +29,7 @@ function mapFirebaseStore(refId: string, data: any): Store {
   }
 }
 
-export function get(firebaseApp: firebase.app.App, id: string) {
+export function get(id: string, firebaseApp: firebase.app.App = getFirebaseApp()) {
   return firebaseApp
     .firestore()
     .collection('stores')
@@ -37,7 +38,7 @@ export function get(firebaseApp: firebase.app.App, id: string) {
     .then((s) => mapFirebaseStore(s.id, s.data()))
 }
 
-export function getMultiple(firebaseApp: firebase.app.App, ids: string[]) {
+export function getMultiple(ids: string[], firebaseApp: firebase.app.App = getFirebaseApp()) {
   return firebaseApp
     .firestore()
     .collection('stores')
@@ -46,7 +47,7 @@ export function getMultiple(firebaseApp: firebase.app.App, ids: string[]) {
     .then((s) => s.docs.map((d) => mapFirebaseStore(d.id, d.data())))
 }
 
-export function getAll(firebaseApp: firebase.app.App) {
+export function getAll(firebaseApp: firebase.app.App = getFirebaseApp()) {
   return firebaseApp
     .firestore()
     .collection('stores')

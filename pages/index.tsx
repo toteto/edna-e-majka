@@ -3,16 +3,15 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import { ProductCardsGroup } from '../components/product-card'
 import { Message } from 'semantic-ui-react'
 import { ContactModal } from '../components/contact-modal'
-import firebase from 'firebase'
 import { products, stores } from '../lib'
 
 export const getStaticProps = async (_context: GetStaticPropsContext) => {
-  const allProducts = await products.getAll(firebase.app())
+  const allProducts = await products.getAll()
   const storeIds = allProducts.reduce(
     (storeIds: string[], p) => (storeIds.includes(p.store) ? storeIds : storeIds.concat(p.store)),
     []
   )
-  const allStores = await stores.getMultiple(firebase.app(), storeIds)
+  const allStores = await stores.getMultiple(storeIds)
 
   return {
     props: {

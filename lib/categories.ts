@@ -1,16 +1,17 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import { getFirebaseApp } from './firebase-context'
 
 export type Category = {
   id: string
   title: string
 }
 
-export function get(firebaseApp: firebase.app.App, id: string): Promise<Category | null> {
+export function get(id: string, firebaseApp: firebase.app.App = getFirebaseApp()): Promise<Category | null> {
   return getAll(firebaseApp).then((cs) => cs.find((c) => c.id === id) ?? null)
 }
 
-export function getAll(firebaseApp: firebase.app.App): Promise<Category[]> {
+export function getAll(firebaseApp: firebase.app.App = getFirebaseApp()): Promise<Category[]> {
   return firebaseApp
     .firestore()
     .collection('misc')

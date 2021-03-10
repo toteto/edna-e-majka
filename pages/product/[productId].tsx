@@ -1,5 +1,5 @@
 import styles from '../../styles/Product.module.css'
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Header, Label, Popup, Statistic } from 'semantic-ui-react'
@@ -8,6 +8,7 @@ import Head from 'next/head'
 import firebase from 'firebase/app'
 import { products, stores } from '../../lib'
 import { truncate } from '../../lib/util'
+import { getFirebaseApp } from '../../lib/firebase-context'
 
 type PathParams = {
   productId: string
@@ -21,15 +22,14 @@ type ProductPageProps = {
 export const getStaticProps: GetStaticProps<ProductPageProps, PathParams> = async ({ params }) => {
   if (params?.productId == null) throw new Error('Invalid params for product page!')
 
-  const firebaseApp = firebase.app()
-  const product = await products.get(firebaseApp, params.productId)
-  const store = await stores.get(firebaseApp, product.store)
+  const product = await products.get(params.productId)
+  const store = await stores.get(product.store)
   return { props: { product, store } }
 }
 
 export const getStaticPaths: GetStaticPaths<PathParams> = async () => {
   const paths = await products
-    .getAll(firebase.app())
+    .getAll(getFirebaseApp())
     .then((products) => products.map((p) => ({ params: { productId: p.id } })))
 
   return { paths, fallback: false }
