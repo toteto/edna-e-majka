@@ -1,27 +1,26 @@
 import Head from 'next/head'
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
-import { fetchProducer, fetchProduct, fetchProductsWithProducers, Producer, Product } from '../lib/products'
 import { ProductCardsGroup } from '../components/product-card'
 import { Message } from 'semantic-ui-react'
 import { ContactModal } from '../components/contact-modal'
+import { products, stores } from '../lib'
 
 export const getStaticProps = async (_context: GetStaticPropsContext) => {
-  const ids = await fetchProductsWithProducers()
-  const allProducts: { producer: Producer; product: Product }[] = []
-  for (const pair of ids) {
-    const producer = await fetchProducer(pair.producer)
-    const product = await fetchProduct(pair.producer, pair.product)
-    allProducts.push({ producer, product })
-  }
+  const allProducts = await products.getAll()
+  const storeIds = allProducts.reduce(
+    (storeIds: string[], p) => (storeIds.includes(p.store) ? storeIds : storeIds.concat(p.store)),
+    []
+  )
+  const allStores = await stores.getMultiple(storeIds)
 
   return {
     props: {
-      allProducts
+      productCards: allProducts.map((product) => ({ product, store: allStores.find((s) => s.id === product.store)! }))
     }
   }
 }
 
-const Home = ({ allProducts }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home = ({ productCards }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       <Head>
@@ -52,7 +51,7 @@ const Home = ({ allProducts }: InferGetStaticPropsType<typeof getStaticProps>) =
             </ContactModal>
           </p>
         </Message>
-        <ProductCardsGroup products={allProducts} />
+        <ProductCardsGroup products={productCards} />
       </div>
     </>
   )

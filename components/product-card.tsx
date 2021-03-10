@@ -2,36 +2,37 @@ import styles from './product-card.module.css'
 import NextImage from 'next/image'
 import Link from 'next/link'
 import { Card, Header, Statistic, Menu, Icon, Image } from 'semantic-ui-react'
-import { Producer, Product } from '../lib/products'
 import format from 'date-fns/format'
 import { useState } from 'react'
+import { products, stores } from '../lib'
+import { truncate } from '../lib/util'
 
-export const ProductCard = ({ producer, product }: { producer: Producer; product: Product }) => {
+export const ProductCard = ({ store, product }: { store: stores.Store; product: products.Product }) => {
   return (
-    <Link passHref href={`/product/${producer.id}/${product.id}`}>
-      <Card fluid color="yellow" key={`${producer.id}-${product.id}`} style={{ margin: 0 }}>
+    <Link passHref href={`/product/${product.id}`}>
+      <Card fluid color="yellow" key={`${store.id}-${product.id}`} style={{ margin: 0 }}>
         <NextImage src={product.images[0]} width={300} height={225} objectFit="cover" />
         <Card.Content>
           <Card.Header>{product.title}</Card.Header>
           <Card.Meta>
-            <span>Додадено {format(new Date(product.addedDate), 'dd.MM.yyyy')}</span>
+            <span>Додадено {format(new Date(product.created), 'dd.MM.yyyy')}</span>
           </Card.Meta>
-          <Card.Description>{product.shortDescription}</Card.Description>
+          <Card.Description>{truncate(product.description, 123)}</Card.Description>
         </Card.Content>
 
         <Card.Content extra textAlign="center">
           <Header sub>ЦЕНА</Header>
-          {product.price.map((p) => (
-            <Statistic key={p.desc} size="mini" color="red" label={p.desc} value={p.cost + ' МКД'} />
+          {product.variants.map((p) => (
+            <Statistic key={p.title} size="mini" color="red" label={p.title} value={p.price + ' МКД'} />
           ))}
         </Card.Content>
         <Card.Content extra>
-          <Link passHref href={`/filter/producer/${producer.id}`}>
+          <Link passHref href={`/filter/store/${store.id}`}>
             <a>
               <div className={'ui avatar image'}>
-                <NextImage src={producer.avatar} width={28} height={28} objectFit="cover" />
+                <NextImage src={store.avatar} width={28} height={28} objectFit="cover" />
               </div>
-              {producer.name}
+              {store.name}
             </a>
           </Link>
         </Card.Content>
@@ -47,8 +48,8 @@ const orderCost = 'cost'
 
 export const ProductCardsGroup = (props: {
   products: {
-    producer: Producer
-    product: Product
+    store: stores.Store
+    product: products.Product
   }[]
 }) => {
   const [sortDirection, setOrderDirection] = useState<OrderDirectionType>('ascending')
@@ -84,15 +85,15 @@ export const ProductCardsGroup = (props: {
           .sort((p1, p2) => {
             const score =
               (sortType === 'alphabetical' && p1.product.title.localeCompare(p2.product.title, 'mk')) ||
-              (sortType === 'date' &&
-                new Date(p2.product.addedDate).getTime() - new Date(p1.product.addedDate).getTime()) ||
+              (sortType === 'date' && p2.product.created - p1.product.created) ||
               (sortType === 'cost' &&
-                Math.min(...p1.product.price.map((p) => p.cost)) - Math.min(...p2.product.price.map((p) => p.cost)))
+                Math.min(...p1.product.variants.map((p) => p.price)) -
+                  Math.min(...p2.product.variants.map((p) => p.price)))
 
             return score ? (sortDirection === 'ascending' ? score : -1 * score) : 0
           })
           .map((p) => (
-            <ProductCard key={`${p.producer.id}-${p.product.id}`} {...p} />
+            <ProductCard key={`${p.store.id}-${p.product.id}`} {...p} />
           ))}
       </div>
     </div>

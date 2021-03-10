@@ -2,50 +2,50 @@ import styles from './producer-info.module.css'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Header, Icon, Label, Segment, Container } from 'semantic-ui-react'
-import { Producer } from '../lib/products'
+import { stores } from '../lib'
 
-export const ProducerInfo = ({ producer, minimal }: { producer: Producer; minimal?: boolean }) => (
+export const ProducerInfo = ({ store, minimal }: { store: stores.Store; minimal?: boolean }) => (
   <div className={styles.container}>
     <Segment>
       <div className={styles.innerContainer}>
-        <Link passHref href={`/filter/producer/${producer.id}`}>
+        <Link passHref href={`/filter/store/${store.id}`}>
           <Header>
             <div className={'ui avatar image'}>
-              <Image src={producer.avatar} width={minimal ? 28 : 32} height={minimal ? 28 : 32} objectFit="cover" />
+              <Image src={store.avatar} width={minimal ? 28 : 32} height={minimal ? 28 : 32} objectFit="cover" />
             </div>
-            {producer.name}
+            {store.name}
           </Header>
         </Link>
-        <div dangerouslySetInnerHTML={{ __html: producer.desc }} />
+        <p style={{ whiteSpace: 'pre-wrap' }}>{store.description}</p>
         <Header size="small">
           Контакт:
-          <ProducerContactsLabels producer={producer} />
+          <ProducerContactsLabels store={store} />
         </Header>
       </div>
     </Segment>
   </div>
 )
 
-export const ProducerContactsLabels = ({ producer }: { producer: Producer }) => (
+export const ProducerContactsLabels = ({ store }: { store: stores.Store }) => (
   <div className={styles.producerContactsLabelsContainer}>
-    {producer.contact.phone && (
+    {store.contact.phone && (
       <div className={styles.producerContactLabel}>
-        <PhoneContactLabel phone={producer.contact.phone} />
+        <PhoneContactLabel phone={store.contact.phone} />
       </div>
     )}
-    {producer.contact.facebook && (
+    {store.contact.facebook && (
       <div className={styles.producerContactLabel}>
-        <FacebookContactLabel url={producer.contact.facebook} />
+        <FacebookContactLabel url={store.contact.facebook} />
       </div>
     )}
-    {producer.contact.instagram && (
+    {store.contact.instagram && (
       <div className={styles.producerContactLabel}>
-        <InstagramContactLabel url={producer.contact.instagram} />
+        <InstagramContactLabel url={store.contact.instagram} />
       </div>
     )}
-    {producer.contact.mail && (
+    {store.contact.email && (
       <div className={styles.producerContactLabel}>
-        <MailContactLabel mail={producer.contact.mail} />
+        <MailContactLabel mail={store.contact.email} />
       </div>
     )}
   </div>

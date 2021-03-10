@@ -1,27 +1,20 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
 import Head from 'next/head'
 import { ProducerInfo } from '../../components/producer-info'
-import { ProductCard, ProductCardsGroup } from '../../components/product-card'
-import { Category, fetchCategories } from '../../lib/categories'
-import {
-  fetchProducerIds as fetchProducersIds,
-  fetchProductsByCategory,
-  fetchProductsByProducer,
-  fetchProductsBySearchQuery,
-  Producer,
-  Product
-} from '../../lib/products'
+import { categories, products, search, stores } from '../../lib'
+import { ProductCardsGroup } from '../../components/product-card'
+import { getFirebaseApp } from '../../lib/firebase-context'
 
-type FilterType = 'category' | 'producer' | 'search'
+type FilterType = 'category' | 'store' | 'search'
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
   const slugs: [FilterType, string][] = []
 
-  const categories = await fetchCategories()
-  categories.forEach((c) => slugs.push(['category', c.id]))
+  const allCategories = await categories.getAll(getFirebaseApp())
+  allCategories.forEach((c) => slugs.push(['category', c.id]))
 
-  const producers = await fetchProducersIds()
-  producers.forEach((p) => slugs.push(['producer', p]))
+  const allStores = await stores.getAll()
+  allStores.forEach((s) => slugs.push(['store', s.id]))
 
   return { paths: slugs.map((s) => ({ params: { slug: s } })), fallback: 'blocking' }
 }
@@ -29,32 +22,36 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 export const getStaticProps: GetStaticProps<FilterPageProps> = async (ctx) => {
   const { params } = ctx
   const [filterType, filterQuery] = params!.slug as any
-
+  const allStores = await stores.getAll()
   switch (filterType) {
+    case 'search':
+      const searchProducts = await search.products(filterQuery)
+      return {
+        props: {
+          pageTitle: `${filterQuery} | ЕДНА Е МАЈКА`,
+          products: searchProducts.map((p) => [p, allStores.find((s) => s.id === p.store)!])
+        }
+      }
     case 'category':
-      const category = (await fetchCategories(filterQuery))[0]
+      const category = await categories.get(filterQuery)
+      const categoryProducts = category == null ? [] : await products.getByCategory(category)
+
       return {
         props: {
           pageTitle: `${category?.title ?? filterQuery} | ЕДНА Е МАЈКА`,
-          products: await fetchProductsByCategory(filterQuery)
+          products: categoryProducts.map((p) => [p, allStores.find((s) => s.id === p.store)!]),
+          queryCategory: category!
         }
       }
-    case 'producer':
-      try {
-        const result = await fetchProductsByProducer(filterQuery)
-        return {
-          props: {
-            pageTitle: `${result.producer.name} | ЕДНА Е МАЈКА`,
-            products: result.products,
-            producerInfo: result.producer
-          }
-        }
-      } catch (e) {
-        console.error(`Filtering for invalid user ->${filterQuery}<-`, e)
-      }
-    case 'search':
+    case 'store':
+      const store = await stores.get(filterQuery)
+      const storeProducts = await products.getByStore(filterQuery)
       return {
-        props: { pageTitle: `${filterQuery} | ЕДНА Е МАЈКА`, products: await fetchProductsBySearchQuery(filterQuery) }
+        props: {
+          pageTitle: `${store.name} | ЕДНА Е МАЈКА`,
+          products: storeProducts.map((p) => [p, store]),
+          queryStore: store
+        }
       }
     default:
       return { props: { pageTitle: 'ЕДНА Е МАЈКА?', products: [] } }
@@ -63,9 +60,9 @@ export const getStaticProps: GetStaticProps<FilterPageProps> = async (ctx) => {
 
 type FilterPageProps = {
   pageTitle: string
-  products: { producer: Producer; product: Product }[]
-  producerInfo?: Producer
-  categoryInfo?: Category
+  products: [products.Product, stores.Store][]
+  queryStore?: stores.Store
+  queryCategory?: categories.Category
 }
 
 const FilterPage = (props: FilterPageProps) => {
@@ -76,8 +73,8 @@ const FilterPage = (props: FilterPageProps) => {
         <meta property="og:title" key="og:title" content={props.pageTitle} />
       </Head>
       <div>
-        {props.producerInfo && <ProducerInfo producer={props.producerInfo} />}
-        <ProductCardsGroup products={props.products} />
+        {props.queryStore && <ProducerInfo store={props.queryStore} />}
+        <ProductCardsGroup products={props.products.map(([product, store]) => ({ store, product }))} />
       </div>
     </>
   )
