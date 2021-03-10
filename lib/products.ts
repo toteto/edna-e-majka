@@ -1,177 +1,89 @@
-import path from 'path'
-import fs from 'fs'
-import matter from 'gray-matter'
-import remark from 'remark'
-import html from 'remark-html'
-import { Category, fetchCategories } from './categories'
-import { latinToCyrillic } from './util'
+import { categories } from '.'
+import firebase from 'firebase/app'
+import 'firebase/firestore'
 
-const publicDir = () => path.resolve('./public')
-const productsDir = () => path.join(publicDir(), 'data', 'products')
-
-export type Producer = {
-  id: string
-  name: string
-  avatar: string
-  contact: {
-    phone?: string
-    mail?: string
-    facebook?: string
-    instagram?: string
-  }
-  desc: string
+export type ProductVariant = {
+  title: string
+  price: number
 }
 
 export type Product = {
   id: string
+  store: string
   title: string
+  description: string
+  categories: categories.Category[]
   images: string[]
-  price: {
-    desc: string
-    cost: number
-  }[]
-  categories: Category[]
-  addedDate: string
-  shortDescription: string
-  fullDescription: string
+  variants: ProductVariant[]
+  created: number
 }
 
-export const fetchProduct = async (producer: string, product: string): Promise<Product> => {
-  const fileContent = fs.readFileSync(path.join(productsDir(), producer, `${product}.md`))
-
-  const images: string[] = []
-  let i = 1
-  while (true) {
-    const imagePath = path.join('/assets', producer, `${product}-${i}.jpg`)
-    const fullPath = path.join(publicDir(), imagePath)
-
-    if (fs.existsSync(fullPath)) {
-      images.push(imagePath)
-      i++
-    } else {
-      break
-    }
-  }
-
-  const { data, content } = matter(fileContent)
-
+function mapFirebaseProduct(refId: string, data: any): Product {
   return {
-    id: product,
-    title: data.title,
-    images,
-    price: data.price,
-    categories: await fetchCategories(...data.categories),
-    addedDate: data.addedDate,
-    shortDescription: data.shortDescription,
-    fullDescription: (await remark().use(html).process(content)).toString()
+    ...data,
+    id: refId,
+    created: data.created?.toMillis()
   }
 }
 
-export const fetchProducer = async (producer: string): Promise<Producer> => {
-  const fileContent = fs.readFileSync(path.join(productsDir(), producer, '_.md'))
-  const { data, content } = matter(fileContent)
-  const desc = (await remark().use(html).process(content)).toString()
-
-  return {
-    id: producer,
-    name: data.name,
-    avatar: data.avatar ?? `/assets/${producer}/_.png`,
-    contact: {
-      ...data.contact
-    },
-    desc
-  }
+export function getAll(firebaseApp: firebase.app.App) {
+  return firebaseApp
+    .firestore()
+    .collection('products')
+    .get()
+    .then((s) => s.docs.map((d) => mapFirebaseProduct(d.id, d.data())))
 }
 
-export const fetchProductsByProducer = async (producerId: string) => {
-  const ids = await fetchProductsGroupedByProducers()
-
-  const resultIds = ids.find(({ producer }) => producer === producerId)
-  const producer = await fetchProducer(producerId)
-
-  const products: { producer: Producer; product: Product }[] = []
-  for (const product of resultIds?.products ?? []) {
-    products.push({ producer, product: await fetchProduct(producerId, product) })
-  }
-
-  return { producer, products }
+export function get(firebaseApp: firebase.app.App, id: string) {
+  return firebaseApp
+    .firestore()
+    .collection('products')
+    .doc(id)
+    .get()
+    .then((s) => mapFirebaseProduct(s.id, s.data()))
 }
 
-export const fetchProductsByCategory = async (categoryId: string) => {
-  const ids = await fetchProductsWithProducers()
-  const results: { producer: Producer; product: Product }[] = []
-  for (const pair of ids) {
-    const producer = await fetchProducer(pair.producer)
-    const product = await fetchProduct(pair.producer, pair.product)
-    if (product.categories.some((c) => c.id === categoryId)) results.push({ producer, product })
-  }
-
-  return results
+export function getMultiple(firebaseApp: firebase.app.App, ids: string[]) {
+  return firebaseApp
+    .firestore()
+    .collection('products')
+    .where(firebase.firestore.FieldPath.documentId(), 'in', ids)
+    .get()
+    .then((s) => s.docs.map((d) => mapFirebaseProduct(d.id, d.data())))
 }
 
-export const fetchProductsBySearchQuery = async (term: string): Promise<{ producer: Producer; product: Product }[]> => {
-  const ids = await fetchProductsGroupedByProducers()
-  const searchSpace: { producer: Producer; product: Product }[] = []
-  for (const pair of ids) {
-    const producer = await fetchProducer(pair.producer)
-    const products: Product[] = []
-    for (const productId of pair.products) {
-      products.push(await fetchProduct(pair.producer, productId))
-    }
-    searchSpace.push(...products.map((product) => ({ producer, product })))
-  }
+export function getByCategory(firebaseApp: firebase.app.App, category: string | categories.Category) {
+  const categoryPromise =
+    typeof category === 'string' ? categories.get(firebaseApp, category) : Promise.resolve(category)
 
-  const Fuse = (await import('fuse.js')).default
-  const fuse = new Fuse(searchSpace, {
-    ignoreLocation: true,
-    includeScore: true,
-    useExtendedSearch: true,
-    keys: [
-      {
-        name: 'product.title',
-        weight: 1
-      },
-      {
-        name: 'product.fullDescription::',
-        weight: 0.2
-      },
-      {
-        name: 'product.categories.title',
-        weight: 0.6
-      },
-      {
-        name: 'producer.name',
-        weight: 0.4
-      }
-    ]
-  })
-  const searchResults = fuse.search(`'${term} | '${latinToCyrillic(term)}`)
-
-  return searchResults.map((res) => res.item)
-}
-
-export const fetchProductsWithProducers = async () =>
-  (await fetchProductsGroupedByProducers()).flatMap(({ products, producer }) =>
-    products.map((product) => ({ product, producer }))
+  return categoryPromise.then((c) =>
+    firebaseApp
+      .firestore()
+      .collection('products')
+      .where('categories', 'array-contains', c)
+      .get()
+      .then(({ docs }) => docs.map((d) => mapFirebaseProduct(d.id, d.data())))
   )
-
-export const fetchProductsGroupedByProducers = async () => {
-  const producers = await fetchProducerIds()
-  return producers.map((producer) => {
-    const products = fs
-      .readdirSync(path.join(productsDir(), producer))
-      .filter((f) => f !== '_.md') // remove producer info
-      .map((pid) => pid.replace(/\.md$/, '')) // remove .md extension
-
-    return { producer, products }
-  })
 }
 
-export const fetchProducers = async () => {
-  const ids = await fetchProducerIds()
-  return Promise.all(ids.map((id) => fetchProducer(id)))
+export function getByStore(firebaseApp: firebase.app.App, store: string) {
+  return firebaseApp
+    .firestore()
+    .collection('products')
+    .where('store', '==', store)
+    .get()
+    .then(({ docs }) => docs.map((d) => mapFirebaseProduct(d.id, d.data())))
 }
 
-export const fetchProducerIds = async () => {
-  return fs.readdirSync(productsDir())
+export function liveProductsForStore(
+  firebaseApp: firebase.app.App,
+  storeId: string,
+  onChange: (products: Product[]) => void
+) {
+  const unsub = firebaseApp
+    .firestore()
+    .collection('products')
+    .where('store', '==', storeId)
+    .onSnapshot(({ docs }) => onChange(docs.map((d) => mapFirebaseProduct(d.id, d.data()))))
+  return unsub
 }

@@ -1,44 +1,20 @@
+import firebase from 'firebase/app'
+import 'firebase/firestore'
+
 export type Category = {
   id: string
   title: string
-  parent?: string
 }
 
-const categories: Category[] = [
-  {
-    id: 'fruits',
-    title: 'Овошје'
-  },
-  {
-    id: 'bee-products',
-    title: 'Пчелни производи'
-  },
-  {
-    id: 'honey',
-    title: 'Мед'
-  },
-  {
-    id: 'pasta',
-    title: 'Тестенини'
-  },
-  {
-    id: 'spread',
-    title: 'Намази'
-  },
-  {
-    id: 'jams-jelly',
-    title: 'Слатко и џем'
-  },
-  {
-    id: 'forest-products',
-    title: 'Шумски плодови'
-  },
-  {
-    id: 'mushrooms',
-    title: 'Печурки'
-  }
-]
+export function get(firebaseApp: firebase.app.App, id: string): Promise<Category | null> {
+  return getAll(firebaseApp).then((cs) => cs.find((c) => c.id === id) ?? null)
+}
 
-export const fetchCategories = async (...ids: string[]) => {
-  return ids.length > 0 ? categories.filter((c) => ids.includes(c.id)) : [...categories]
+export function getAll(firebaseApp: firebase.app.App): Promise<Category[]> {
+  return firebaseApp
+    .firestore()
+    .collection('misc')
+    .doc('categories')
+    .get()
+    .then((s) => Object.entries(s.data() as any).map(([id, title]) => ({ id, title: title as string })))
 }

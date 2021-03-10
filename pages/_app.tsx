@@ -5,22 +5,23 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styles from '../styles/_app.module.css'
 import { Dropdown, Input, Image, Icon } from 'semantic-ui-react'
-import { Category, fetchCategories } from '../lib/categories'
 import { AppProps } from 'next/dist/next-server/lib/router/router'
 import { useState } from 'react'
 import { ContactModal } from '../components/contact-modal'
-import { fetchProducers, Producer } from '../lib/products'
-import { firebase } from '@firebase/app'
-import '@firebase/analytics'
+import firebase from 'firebase'
+import 'firebase/analytics'
+import 'firebase/firestore'
 import { ProvideAuth, useAuth } from '../lib/firebase-auth-context'
 import { AuthModal } from '../components/auth-components'
 import { FirebaseAppProvider } from '../lib/firebase-context'
 import { CooperationContactModal } from '../components/cooperation-modal'
+import { categories, stores } from '../lib'
 
 MyApp.getInitialProps = async () => {
-  const categories = await fetchCategories()
-  const producers = (await fetchProducers()).sort((a, b) => a.name.localeCompare(b.name))
-  return { categories, producers }
+  const allStores = await stores.getAll(firebase.app())
+  const allCategories = await categories.getAll(firebase.app())
+
+  return { categories: allCategories, stores: allStores }
 }
 
 function MyApp(appProps: AppProps) {
@@ -62,15 +63,13 @@ function MyApp(appProps: AppProps) {
                 className={styles.headerDropdown}
                 text="Производители"
                 icon="angle down"
-                options={appProps.producers.map((producer: Producer) => ({
-                  key: producer.id,
-                  text: producer.name,
+                options={appProps.stores.map((store: stores.Store) => ({
+                  key: store.id,
+                  text: store.name,
                   active: false,
                   onClick: () => {
-                    firebase
-                      .analytics()
-                      .logEvent('select_content', { content_type: 'producer', content_id: producer.id })
-                    router.push(`/filter/producer/${producer.id}`)
+                    firebase.analytics().logEvent('select_content', { content_type: 'producer', content_id: store.id })
+                    router.push(`/filter/store/${store.id}`)
                   }
                 }))}
               />
@@ -78,7 +77,7 @@ function MyApp(appProps: AppProps) {
                 className={styles.headerDropdown}
                 text="Категории"
                 icon="angle down"
-                options={appProps.categories.map((category: Category) => ({
+                options={appProps.categories.map((category: categories.Category) => ({
                   key: category.id,
                   text: category.title,
                   active: false,

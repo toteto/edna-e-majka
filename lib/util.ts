@@ -60,3 +60,7 @@ export function validateEmail(email: string): boolean {
     /^((([!#$%&'*+\-/=?^_`{|}~\w])|([!#$%&'*+\-/=?^_`{|}~\w][!#$%&'*+\-/=?^_`{|}~\.\w]{0,}[!#$%&'*+\-/=?^_`{|}~\w]))[@]\w+([-.]\w+)*\.\w+([-.]\w+)*)$/
   )
 }
+
+export function truncate(text: string, maxLength: number, leeway = 0.1) {
+  return text.length > maxLength + maxLength * leeway ? text.slice(0, maxLength) + '...' : text
+}
