@@ -7,7 +7,6 @@
 }
 
 .categoryIcon:hover {
-  /* background-color: #ffc145; */
   transition: all 0.2s ease-out;
   background-image: radial-gradient(closest-side, #ffc145, #ffc14500);
   transform: scale(1.05);

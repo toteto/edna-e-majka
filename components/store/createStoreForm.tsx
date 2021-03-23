@@ -182,7 +182,7 @@ const CreateStoreForm = (props: { onSuccess: () => void; store?: stores.Store })
         control={control}
         defaultValue=""
         render={({ onChange, value }) => (
-          <Form.TextArea value={value} onChange={onChange} label="Краток опис за продавницата" />
+          <Form.TextArea value={value} onChange={onChange} rows={13} label="Краток опис за продавницата" />
         )}
       />
       <Button fluid primary>

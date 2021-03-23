@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styles from '../styles/_app.module.css'
-import { Dropdown, Input, Image, Icon } from 'semantic-ui-react'
+import { Dropdown, Input, Image, Icon, DropdownItemProps } from 'semantic-ui-react'
 import { AppProps } from 'next/dist/next-server/lib/router/router'
 import { useState } from 'react'
 import { ContactModal } from '../components/contact-modal'
@@ -81,6 +81,7 @@ function MyApp(appProps: AppProps) {
               onKeyDown={(e: any) => e.code === 'Enter' && triggerProductSearch()}
               action={{ color: 'red', icon: 'search', content: 'Пребарај', onClick: triggerProductSearch }}
             />
+            <UserHeaderInfo />
           </div>
           <div style={{ flexGrow: 1 }}>
             <appProps.Component {...appProps.pageProps} />
@@ -94,26 +95,42 @@ function MyApp(appProps: AppProps) {
 
 const UserHeaderInfo = () => {
   const auth = useAuth()
+  const router = useRouter()
 
   if (auth.user) {
+    const dropdownOptions: DropdownItemProps[] = []
+    if (auth.user.stores.length > 0) {
+      dropdownOptions.push({
+        key: 'manage-shop',
+        icon: 'shop',
+        text: 'Менаџирај продавница',
+        onClick: () => router.push('/manageStore')
+      })
+    } else {
+      dropdownOptions.push({
+        key: 'orders',
+        icon: 'shopping basket',
+        text: 'Мои нарачки (наскоро)',
+        disabled: true
+      })
+    }
+    dropdownOptions.push({
+      key: 'logout',
+      icon: 'sign-out',
+      text: 'Одјави се',
+      onClick: () => auth.signout()
+    })
+
     return (
       <Dropdown
         icon={null}
         trigger={
           <div>
             <Image src={auth.user.photoURL ?? '/assets/avatar-placeholder.jpg'} avatar />
-            <span>{auth.user.displayName ?? auth.user.email}</span>
+            <span>{auth.user.displayName}</span>
           </div>
         }
-        options={[
-          { key: 'manage-shop', text: 'Менаџирај продавница (наскоро)', disabled: true, active: false },
-          {
-            key: 'logout',
-            text: 'Одјави се',
-            active: false,
-            onClick: () => auth.signout()
-          }
-        ]}
+        options={dropdownOptions}
       />
     )
   } else {

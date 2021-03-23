@@ -2,9 +2,19 @@ import React, { useState, useEffect, useContext, createContext } from 'react'
 import { useFirebaseApp } from './firebase-context'
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import uuid from 'uuid'
+
+export type User = {
+  id: string
+  role?: 'admin'
+  displayName: string
+  email: string
+  photoURL?: string
+  stores: string[]
+}
 
 type AuthContextType = {
-  user?: firebase.User
+  user?: User
   signin: (email: string, password: string) => Promise<any>
   signup: (displayName: string, email: string, password: string) => Promise<any>
   signout: () => Promise<any>
@@ -23,7 +33,7 @@ const AuthContext = createContext<AuthContextType>({
 
 export const ProvideAuth: React.FC = ({ children }) => {
   const firebaseApp = useFirebaseApp()
-  const auth = useProvideAuth(firebaseApp.auth!!())
+  const auth = useProvideAuth(firebaseApp.firestore(), firebaseApp.auth())
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
 }
@@ -32,12 +42,34 @@ export const useAuth = () => {
   return useContext(AuthContext)
 }
 
-function useProvideAuth(firebaseAuth: firebase.auth.Auth): AuthContextType {
-  const [user, setUser] = useState<firebase.User | undefined>()
+function useProvideAuth(firestore: firebase.firestore.Firestore, firebaseAuth: firebase.auth.Auth): AuthContextType {
+  const [authUser, setAuthUser] = useState<firebase.User | null | undefined>(undefined)
+  const [user, setUser] = useState<User | null | undefined>()
+
+  useEffect(() => {
+    if (authUser == null) return setUser(authUser)
+
+    const dispose = firestore
+      .collection('users')
+      .doc(authUser.uid)
+      .onSnapshot((s) => {
+        const userData = s.data()
+        setUser({
+          id: authUser.uid,
+          role: userData?.role ?? undefined,
+          displayName: authUser.displayName ?? authUser.email ?? '',
+          email: authUser.email!,
+          photoURL: authUser.photoURL!,
+          stores: userData?.stores ?? []
+        })
+      })
+
+    return dispose
+  }, [authUser])
 
   const signin = (email: string, password: string) => {
     return firebaseAuth.signInWithEmailAndPassword(email, password).then((response) => {
-      setUser(response.user ?? undefined)
+      setAuthUser(response.user)
       return response.user
     })
   }
@@ -50,7 +82,7 @@ function useProvideAuth(firebaseAuth: firebase.auth.Auth): AuthContextType {
   }
 
   const signout = () => {
-    return firebaseAuth.signOut().then(() => setUser(undefined))
+    return firebaseAuth.signOut().then(() => setAuthUser(null))
   }
 
   const sendPasswordResetEmail = (email: string) => {
@@ -62,7 +94,7 @@ function useProvideAuth(firebaseAuth: firebase.auth.Auth): AuthContextType {
   }
 
   useEffect(() => {
-    const unsubscribe = firebaseAuth.onAuthStateChanged((user) => setUser(user ?? undefined))
+    const unsubscribe = firebaseAuth.onAuthStateChanged((user) => setAuthUser(user))
     return () => unsubscribe()
   }, [])
 
