@@ -21,6 +21,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { categories, products } from '../../../lib'
 import { v4 as uuid } from 'uuid'
 import { useAuth } from '../../../lib/firebase-auth-context'
+import Resizer from 'react-image-file-resizer'
 
 const ManageStoreProducts = () => {
   const { user } = useAuth()
@@ -159,7 +160,13 @@ const ProductForm = (props: { storeId: string; product?: products.Product }) => 
     try {
       const images: string[] = data.images.length > 0 ? [] : props.product?.images ?? []
       for (const image of data.images) {
-        const uploadTask = await storage.ref(`storesAssets/${props.storeId}/${productRef.id}/${uuid()}`).put(image)
+        const compressedImage = await new Promise<Blob>((resolve) =>
+          Resizer.imageFileResizer(image, 1200, 1200, 'JPEG', 95, 0, (blob) => resolve(blob as Blob), 'blob')
+        )
+
+        const uploadTask = await storage
+          .ref(`storesAssets/${props.storeId}/${productRef.id}/${uuid()}`)
+          .put(compressedImage)
         const downloadUrl = await uploadTask.ref.getDownloadURL()
         images.push(downloadUrl)
       }
