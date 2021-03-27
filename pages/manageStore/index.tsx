@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Table, Button, Icon, Modal, Loader, Image } from 'semantic-ui-react'
+import { Table, Button, Icon, Modal, Loader, Image, Message } from 'semantic-ui-react'
 import CreateStoreForm from '../../components/store/createStoreForm'
 import { useAuth } from '../../lib/firebase-auth-context'
 import { useFirebaseApp } from '../../lib/firebase-context'
@@ -8,30 +8,15 @@ import { stores } from '../../lib'
 
 const StoreManagementHome = () => {
   const { user } = useAuth()
+  if (user === null) return <Message error content="Не сте најавен" />
   const firebaseApp = useFirebaseApp()
-  const [userStoresIds, setUserStoresIds] = useState<string[] | 'loading'>('loading')
   const [userStores, setUserStores] = useState<stores.Store[] | 'loading'>('loading')
 
   useEffect(() => {
-    if (!user) return setUserStoresIds('loading')
+    if (user == null) return setUserStores('loading')
 
-    const unsubscribe = firebaseApp
-      .firestore()
-      .collection('users')
-      .doc(user.uid)
-      .onSnapshot((doc) => {
-        setUserStoresIds((doc.data() as { stores: string[] })?.stores ?? [])
-      })
-
-    return unsubscribe
+    stores.getMultiple(user.stores, firebaseApp).then(setUserStores)
   }, [user])
-
-  useEffect(() => {
-    if (userStoresIds === 'loading') return setUserStores('loading')
-    if (userStoresIds.length === 0) return setUserStores([])
-
-    stores.getMultiple(userStoresIds, firebaseApp).then(setUserStores)
-  }, [userStoresIds])
 
   if (userStores === 'loading') return <Loader active>Се вчитуваат вашите продавници</Loader>
 
@@ -88,7 +73,7 @@ const StoreManagementHome = () => {
                 </p>
               </Table.Cell>
               <Table.Cell>
-                <Link href={`/store/${store.id}/products`}>
+                <Link href={`/manageStore/${store.id}/products`}>
                   <Button icon="shop" labelPosition="left" content="Производи" />
                 </Link>
                 <Modal
@@ -106,26 +91,28 @@ const StoreManagementHome = () => {
           ))
         )}
       </Table.Body>
-      <Table.Footer fullWidth>
-        <Table.Row>
-          <Table.HeaderCell colSpan="6">
-            <Modal
-              closeIcon
-              trigger={
-                <Button icon fluid labelPosition="left" primary>
-                  <Icon name="shop" />
-                  Креирај нова продавница
-                </Button>
-              }
-            >
-              <Modal.Header>Креирај продавница</Modal.Header>
-              <Modal.Content>
-                <CreateStoreForm onSuccess={() => {}} />
-              </Modal.Content>
-            </Modal>
-          </Table.HeaderCell>
-        </Table.Row>
-      </Table.Footer>
+      {user!.role == 'admin' && (
+        <Table.Footer fullWidth>
+          <Table.Row>
+            <Table.HeaderCell colSpan="6">
+              <Modal
+                closeIcon
+                trigger={
+                  <Button icon fluid labelPosition="left" primary>
+                    <Icon name="shop" />
+                    Креирај нова продавница
+                  </Button>
+                }
+              >
+                <Modal.Header>Креирај продавница</Modal.Header>
+                <Modal.Content>
+                  <CreateStoreForm onSuccess={() => {}} />
+                </Modal.Content>
+              </Modal>
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Footer>
+      )}
     </Table>
   )
 }

@@ -23,7 +23,7 @@ function mapFirebaseStore(refId: string, data: any): Store {
     ...data,
     id: refId,
     created: data.created.toMillis(),
-    modified: data.modified?.toMillis(),
+    modified: data.modified?.toMillis() ?? null,
     avatar: data.avatar ?? '/assets/avatar-placeholder.jpg',
     status: data.status ?? 'disabled'
   }

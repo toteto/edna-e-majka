@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Form, Message, Modal } from 'semantic-ui-react'
+import { Button, Form, Icon, Message, Modal } from 'semantic-ui-react'
 import { useAuth } from '../lib/firebase-auth-context'
 import { validateEmail } from '../lib/util'
 
@@ -15,8 +15,12 @@ export const SignUp = (props: { onSuccess: () => void }) => {
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
 
   const handleSubmit = () => {
+    if (name.trim().length === 0) {
+      return setError('Ве молиме внесете вашето име.')
+    }
+
     if (!validateEmail(email)) {
-      setError('Имате внесено невалидна email адреса.')
+      setError('Ве молиме внесете валидна email адреса.')
       return
     }
 
@@ -25,7 +29,7 @@ export const SignUp = (props: { onSuccess: () => void }) => {
     }
 
     if (password !== passwordConfirmation) {
-      return setError('Внесените лозинки не се поклопуваат. Обидете се повторно да ги внесите лозинките.')
+      return setError('Внесените лозинки не се исти. Обидете се повторно да ги внесите лозинките.')
     }
 
     setError('')
@@ -76,9 +80,7 @@ export const SignUp = (props: { onSuccess: () => void }) => {
         onChange={(e) => setPasswordConfirmation(e.target.value)}
       />
       <Message error header="Грешка при регистрација" content={error} />
-      <Form.Button fluid disabled={loading} positive>
-        Потврди
-      </Form.Button>
+      <Form.Button fluid disabled={loading} positive icon="check" content="Потврди" />
     </Form>
   )
 }
@@ -120,9 +122,7 @@ export const SignIn = (props: { onSuccess: () => void }) => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <Message error header="Грешка при најава" content={error} />
-      <Form.Button fluid disabled={loading} positive>
-        Потврди
-      </Form.Button>
+      <Form.Button fluid disabled={loading} positive icon="check" content="Потврди" />
     </Form>
   )
 }
@@ -165,11 +165,7 @@ const ForgottenPassword = (props: { onSuccess: () => void }) => {
         header="Потврда за ресетирање на лозинка е испратена на вашата електронска пошта."
         content={error}
       />
-      {!success && (
-        <Form.Button fluid disabled={loading} positive>
-          Потврди
-        </Form.Button>
-      )}
+      {!success && <Form.Button fluid disabled={loading} positive icon="check" content="Потврди" />}
     </Form>
   )
 }
@@ -187,9 +183,24 @@ export const AuthModal = (props: { children: React.ReactNode }) => {
       onOpen={() => setOpen(true)}
       open={open}
     >
-      {authType === 'signin' && <Modal.Header>Најава</Modal.Header>}
-      {authType === 'signup' && <Modal.Header>Регистрација</Modal.Header>}
-      {authType === 'forgotten-password' && <Modal.Header>Ресетирање на лозинка</Modal.Header>}
+      {authType === 'signin' && (
+        <Modal.Header>
+          <Icon name="sign-in" />
+          Најава
+        </Modal.Header>
+      )}
+      {authType === 'signup' && (
+        <Modal.Header>
+          <Icon name="signup" />
+          Регистрација
+        </Modal.Header>
+      )}
+      {authType === 'forgotten-password' && (
+        <Modal.Header>
+          <Icon name="question circle" />
+          Ресетирање на лозинка
+        </Modal.Header>
+      )}
       <Modal.Content>
         {authType === 'signin' && <SignIn onSuccess={() => setOpen(false)} />}
         {authType === 'signup' && <SignUp onSuccess={() => setOpen(false)} />}
@@ -197,19 +208,18 @@ export const AuthModal = (props: { children: React.ReactNode }) => {
       </Modal.Content>
       <Modal.Actions>
         {authType !== 'signin' && (
-          <Button color="yellow" onClick={() => setAuthType('signin')}>
-            Најва
-          </Button>
+          <Button color="yellow" icon="sign-in" onClick={() => setAuthType('signin')} content="Најава" />
         )}
         {authType !== 'signup' && (
-          <Button color="yellow" onClick={() => setAuthType('signup')}>
-            Регистрација
-          </Button>
+          <Button color="yellow" icon="signup" onClick={() => setAuthType('signup')} content="Регистрација" />
         )}
         {authType !== 'forgotten-password' && (
-          <Button color="grey" onClick={() => setAuthType('forgotten-password')}>
-            Заборавена лозинка
-          </Button>
+          <Button
+            color="grey"
+            icon="question circle"
+            onClick={() => setAuthType('forgotten-password')}
+            content="Заборавена лозинка"
+          />
         )}
       </Modal.Actions>
     </Modal>

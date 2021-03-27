@@ -20,14 +20,26 @@ import 'firebase/firestore'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { categories, products } from '../../../lib'
 import { v4 as uuid } from 'uuid'
+import { useAuth } from '../../../lib/firebase-auth-context'
+import Resizer from 'react-image-file-resizer'
 
 const ManageStoreProducts = () => {
+  const { user } = useAuth()
+  if (user === null) return <Message error content="Не сте најавен" />
+
   const firebaseApp = useFirebaseApp()
   const { storeId } = useRouter().query
   if (typeof storeId !== 'string') throw new Error(`Invalid storeId type ${typeof storeId}.`)
-
   const [storeProducts, setStoreProducts] = useState<products.Product[] | 'loading'>('loading')
-  useEffect(() => products.liveProductsForStore(storeId, setStoreProducts, firebaseApp), [])
+  useEffect(() => {
+    if (user) {
+      if (user.stores.includes(storeId)) {
+        return products.liveProductsForStore(storeId, setStoreProducts, firebaseApp)
+      } else {
+        alert('Немате пристап кон продавницата кон која се обидувате да присапите.')
+      }
+    }
+  }, [user])
 
   if (storeProducts === 'loading') return <Loader active>Се вчитуваат производите</Loader>
 
@@ -148,7 +160,13 @@ const ProductForm = (props: { storeId: string; product?: products.Product }) => 
     try {
       const images: string[] = data.images.length > 0 ? [] : props.product?.images ?? []
       for (const image of data.images) {
-        const uploadTask = await storage.ref(`storesAssets/${props.storeId}/${productRef.id}/${uuid()}`).put(image)
+        const compressedImage = await new Promise<Blob>((resolve) =>
+          Resizer.imageFileResizer(image, 1200, 1200, 'JPEG', 95, 0, (blob) => resolve(blob as Blob), 'blob')
+        )
+
+        const uploadTask = await storage
+          .ref(`storesAssets/${props.storeId}/${productRef.id}/${uuid()}`)
+          .put(compressedImage)
         const downloadUrl = await uploadTask.ref.getDownloadURL()
         images.push(downloadUrl)
       }

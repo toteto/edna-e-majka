@@ -8,6 +8,7 @@ import 'firebase/storage'
 import { useAuth } from '../../lib/firebase-auth-context'
 import { useState } from 'react'
 import { stores } from '../../lib'
+import Resizer from 'react-image-file-resizer'
 
 const CreateStoreForm = (props: { onSuccess: () => void; store?: stores.Store }) => {
   const [submitStatus, setSubmitStatus] = useState<'loading' | 'success' | null>(null)
@@ -39,7 +40,10 @@ const CreateStoreForm = (props: { onSuccess: () => void; store?: stores.Store })
       const avatarFile = data.avatar[0] as File
       let avatar = props.store?.avatar
       if (avatarFile) {
-        const uploadTask = await storage.ref(`storesAssets/${storeRef.id}}/avatar`).put(avatarFile)
+        const compressedAvatar = await new Promise<Blob>((resolve) =>
+          Resizer.imageFileResizer(avatarFile, 300, 300, 'PNG', 100, 0, (blob) => resolve(blob as Blob), 'blob')
+        )
+        const uploadTask = await storage.ref(`storesAssets/${storeRef.id}/avatar`).put(compressedAvatar)
         avatar = await uploadTask.ref.getDownloadURL()
       }
 
@@ -64,7 +68,7 @@ const CreateStoreForm = (props: { onSuccess: () => void; store?: stores.Store })
         await storeRef.set(uploadData)
         await firestore
           .collection('users')
-          .doc(user!.uid)
+          .doc(user!.id)
           .set(
             {
               stores: firebase.firestore.FieldValue.arrayUnion(storeRef.id)
@@ -182,7 +186,7 @@ const CreateStoreForm = (props: { onSuccess: () => void; store?: stores.Store })
         control={control}
         defaultValue=""
         render={({ onChange, value }) => (
-          <Form.TextArea value={value} onChange={onChange} label="Краток опис за продавницата" />
+          <Form.TextArea value={value} onChange={onChange} rows={13} label="Краток опис за продавницата" />
         )}
       />
       <Button fluid primary>
