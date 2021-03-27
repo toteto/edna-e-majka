@@ -15,8 +15,12 @@ export const SignUp = (props: { onSuccess: () => void }) => {
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
 
   const handleSubmit = () => {
+    if (name.trim().length === 0) {
+      return setError('Ве молиме внесете вашето име.')
+    }
+
     if (!validateEmail(email)) {
-      setError('Имате внесено невалидна email адреса.')
+      setError('Ве молиме внесете валидна email адреса.')
       return
     }
 
@@ -25,7 +29,7 @@ export const SignUp = (props: { onSuccess: () => void }) => {
     }
 
     if (password !== passwordConfirmation) {
-      return setError('Внесените лозинки не се поклопуваат. Обидете се повторно да ги внесите лозинките.')
+      return setError('Внесените лозинки не се исти. Обидете се повторно да ги внесите лозинките.')
     }
 
     setError('')
