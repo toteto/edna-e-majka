@@ -64,7 +64,7 @@ const CreateStoreForm = (props: { onSuccess: () => void; store?: stores.Store })
         await storeRef.set(uploadData)
         await firestore
           .collection('users')
-          .doc(user!.uid)
+          .doc(user!.id)
           .set(
             {
               stores: firebase.firestore.FieldValue.arrayUnion(storeRef.id)

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, createContext } from 'react'
 import { useFirebaseApp } from './firebase-context'
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import uuid from 'uuid'
 
 export type User = {
   id: string
@@ -14,7 +13,7 @@ export type User = {
 }
 
 type AuthContextType = {
-  user?: User
+  user?: User | null
   signin: (email: string, password: string) => Promise<any>
   signup: (displayName: string, email: string, password: string) => Promise<any>
   signout: () => Promise<any>
