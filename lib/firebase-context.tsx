@@ -2,13 +2,13 @@ import { createContext, useContext, useEffect, useRef } from 'react'
 import firebase from 'firebase/app'
 
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: 'edna-e-majka.firebaseapp.com',
   projectId: 'edna-e-majka',
   storageBucket: 'edna-e-majka.appspot.com',
   messagingSenderId: '775290058986',
-  appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 }
 
 export const getFirebaseApp = () =>
