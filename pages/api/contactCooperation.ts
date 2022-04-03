@@ -35,8 +35,8 @@ const handler: NextApiHandler = async (req, res) => {
     host: 'smtppro.zoho.eu',
     port: 465,
     auth: {
-      user: 'antonioivanovski@gmail.com',
-      pass: 'asfBLAm1GqLw'
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
     }
   })
 
